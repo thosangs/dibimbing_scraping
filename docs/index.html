@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building Scalable Data Pipelines · Web Scraping & API</title>
+  <meta name="description" content="Materi hands-on Day 26 Bootcamp Data Engineering: membangun data pipeline dengan Web Scraping (BeautifulSoup + Selenium + XPath) & API Integration. Step-by-step, pakai uv." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #121a33;
+      --card: #161f3d;
+      --card-border: #25325c;
+      --text: #e7ecf6;
+      --muted: #9aa6c4;
+      --accent: #6ea8fe;
+      --accent-2: #8b5cf6;
+      --accent-3: #22d3ee;
+      --green: #34d399;
+      --code-bg: #0d1426;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      padding: 96px 0 72px;
+      text-align: center;
+      background:
+        radial-gradient(900px 500px at 50% -10%, rgba(110,168,254,0.25), transparent 60%),
+        radial-gradient(700px 400px at 90% 10%, rgba(139,92,246,0.18), transparent 55%),
+        radial-gradient(700px 400px at 10% 0%, rgba(34,211,238,0.15), transparent 55%);
+    }
+    .badge-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      background: rgba(110,168,254,0.12);
+      border: 1px solid var(--card-border);
+      color: var(--muted); font-size: 13px; font-weight: 500;
+      margin-bottom: 22px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;
+      background: linear-gradient(120deg, #fff 20%, var(--accent) 60%, var(--accent-2));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 18px;
+    }
+    .hero p.sub { font-size: clamp(16px, 2.5vw, 20px); color: var(--muted); max-width: 680px; margin: 0 auto 32px; }
+    .cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 24px; border-radius: 12px; font-weight: 600; font-size: 15px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover { text-decoration: none; transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(120deg, var(--accent), var(--accent-2)); color: #0b1020; box-shadow: 0 8px 24px rgba(110,168,254,0.35); }
+    .btn-ghost { background: var(--card); border: 1px solid var(--card-border); color: var(--text); }
+
+    section { padding: 64px 0; }
+    .section-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .section-sub { color: var(--muted); margin-bottom: 36px; }
+
+    /* Pipeline flow */
+    .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; }
+    .flow .node {
+      flex: 1 1 140px; background: var(--card); border: 1px solid var(--card-border);
+      border-radius: 12px; padding: 16px; text-align: center; font-weight: 600; font-size: 14px;
+      display: flex; align-items: center; justify-content: center; min-height: 64px;
+      position: relative;
+    }
+    .flow .node span.num {
+      position: absolute; top: -10px; left: -10px; width: 26px; height: 26px;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      color: #0b1020; border-radius: 50%; font-size: 13px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Cards grid */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+    .card {
+      background: var(--card); border: 1px solid var(--card-border); border-radius: 16px;
+      padding: 22px; transition: transform .18s ease, border-color .18s ease;
+    }
+    .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .card .step-no { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; }
+    .card h3 { font-size: 18px; margin: 6px 0 8px; }
+    .card p { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+    .card code { background: var(--code-bg); border: 1px solid var(--card-border); padding: 6px 10px; border-radius: 8px; font-size: 12.5px; display: block; color: var(--accent-3); overflow-x: auto; }
+
+    /* Tools */
+    .tools { display: flex; flex-wrap: wrap; gap: 12px; }
+    .tool { background: var(--card); border: 1px solid var(--card-border); border-radius: 999px; padding: 8px 18px; font-weight: 600; font-size: 14px; }
+
+    /* Quickstart code */
+    pre.codeblock {
+      background: var(--code-bg); border: 1px solid var(--card-border); border-radius: 14px;
+      padding: 22px; overflow-x: auto; font-size: 14px; line-height: 1.7;
+    }
+    pre.codeblock .c { color: #6b7aa3; }
+    pre.codeblock .g { color: var(--green); }
+
+    footer { padding: 48px 0; text-align: center; color: var(--muted); border-top: 1px solid var(--card-border); }
+
+    .feature-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 18px; margin-top: 8px; }
+    .feature { background: var(--bg-soft); border: 1px solid var(--card-border); border-radius: 14px; padding: 20px; }
+    .feature .ico { font-size: 24px; margin-bottom: 8px; }
+    .feature h4 { font-size: 16px; margin-bottom: 6px; }
+    .feature p { color: var(--muted); font-size: 13.5px; }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <div class="badge-pill">📊 Day 26 · Bootcamp Data Engineering</div>
+      <h1>Building Scalable Data Pipelines</h1>
+      <p class="sub">Web Scraping (BeautifulSoup + Selenium + XPath) &amp; API Integration untuk E-Commerce. Materi hands-on <strong>step-by-step</strong>, dikelola dengan <strong>uv</strong>, siap dijalankan di VM.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/thosangs/dibimbing_scraping">⭐ Lihat di GitHub</a>
+        <a class="btn btn-ghost" href="#quickstart">🚀 Quickstart</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="flow">
+      <h2 class="section-title">Alur Pipeline</h2>
+      <p class="section-sub">Dari satu item mentah sampai tersimpan rapi di database — alur yang sama yang dipakai di proyek data engineering nyata.</p>
+      <div class="flow">
+        <div class="node"><span class="num">1</span>Scrape 1 item</div>
+        <div class="node"><span class="num">2</span>Scrape 1 halaman</div>
+        <div class="node"><span class="num">3</span>Dictionary List</div>
+        <div class="node"><span class="num">4</span>Beberapa Halaman</div>
+        <div class="node"><span class="num">5</span>Cleaning Data</div>
+        <div class="node"><span class="num">6</span>Koneksi DB</div>
+        <div class="node"><span class="num">7</span>Tabel &amp; Insert</div>
+      </div>
+    </section>
+
+    <section id="features">
+      <h2 class="section-title">Kenapa Setup Ini?</h2>
+      <p class="section-sub">Dirancang biar gampang diajarkan & dijalankan, terutama di VM.</p>
+      <div class="feature-row">
+        <div class="feature">
+          <div class="ico">📦</div>
+          <h4>uv, bukan pip+venv</h4>
+          <p>Satu perintah <code>uv sync</code> langsung menyiapkan Python 3.12 + semua library.</p>
+        </div>
+        <div class="feature">
+          <div class="ico">🤖</div>
+          <h4>Driver Otomatis</h4>
+          <p>Selenium Manager auto-download ChromeDriver. Tidak ada install driver manual.</p>
+        </div>
+        <div class="feature">
+          <div class="ico">🖥️</div>
+          <h4>Headless-ready</h4>
+          <p>Sudah dikonfigurasi untuk jalan di VM/server tanpa GUI.</p>
+        </div>
+        <div class="feature">
+          <div class="ico">🪜</div>
+          <h4>Satu file per langkah</h4>
+          <p>Tiap konsep berdiri sendiri — pas untuk live coding di kelas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="steps">
+      <h2 class="section-title">Materi Step-by-Step</h2>
+      <p class="section-sub">9 langkah berurutan mengikuti slide kelas, plus pipeline lengkap.</p>
+      <div class="grid">
+        <div class="card"><div class="step-no">Langkah 1</div><h3>Data Pipeline</h3><p>Memahami alur otomatis memindahkan data dari sumber ke tujuan.</p><code>uv run python steps/01_pipeline_overview.py</code></div>
+        <div class="card"><div class="step-no">Langkah 2</div><h3>BeautifulSoup · 1 item</h3><p>Parsing HTML statis & mengambil satu elemen dengan find().</p><code>uv run python steps/02_bs4_satu_item.py</code></div>
+        <div class="card"><div class="step-no">Langkah 3</div><h3>1 Halaman → Dict List</h3><p>find_all() untuk banyak produk dalam satu halaman.</p><code>uv run python steps/03_bs4_satu_halaman.py</code></div>
+        <div class="card"><div class="step-no">Langkah 4</div><h3>Beberapa Halaman</h3><p>Pagination untuk scrape banyak halaman sekaligus.</p><code>uv run python steps/04_bs4_banyak_halaman.py</code></div>
+        <div class="card"><div class="step-no">Langkah 5</div><h3>Selenium · Dinamis</h3><p>Scrape konten yang di-render JavaScript (headless).</p><code>uv run python steps/05_selenium_dinamis.py</code></div>
+        <div class="card"><div class="step-no">Langkah 6</div><h3>XPath</h3><p>Menavigasi & memilih elemen DOM dengan XPath di Selenium.</p><code>uv run python steps/06_selenium_xpath.py</code></div>
+        <div class="card"><div class="step-no">Langkah 7</div><h3>API Integration</h3><p>Mengambil data terstruktur (JSON) dari API e-commerce.</p><code>uv run python steps/07_api.py</code></div>
+        <div class="card"><div class="step-no">Langkah 8</div><h3>Cleaning Data</h3><p>Membersihkan & mengubah format data dengan pandas.</p><code>uv run python steps/08_cleaning.py</code></div>
+        <div class="card"><div class="step-no">Langkah 9</div><h3>Simpan ke Database</h3><p>Koneksi, buat tabel, insert — SQLite (default) / PostgreSQL.</p><code>uv run python steps/09_simpan_database.py</code></div>
+      </div>
+    </section>
+
+    <section id="quickstart">
+      <h2 class="section-title">Quickstart</h2>
+      <p class="section-sub">Dari nol sampai pipeline jalan dalam hitungan menit.</p>
+      <pre class="codeblock"><span class="c"># 1. Install uv (kalau belum ada)</span>
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+<span class="c"># 2. Clone & masuk folder</span>
+git clone https://github.com/thosangs/dibimbing_scraping.git
+cd dibimbing_scraping
+
+<span class="c"># 3. Install semua dependency</span>
+uv sync
+
+<span class="c"># 4. Jalankan pipeline lengkap</span>
+uv run python pipeline.py --halaman 5
+<span class="g">→ data/produk.csv & data/ecommerce.db</span></pre>
+    </section>
+
+    <section id="tools">
+      <h2 class="section-title">Tools</h2>
+      <p class="section-sub">Stack yang dipakai sepanjang materi.</p>
+      <div class="tools">
+        <span class="tool">🐍 Python 3.12</span>
+        <span class="tool">📦 uv</span>
+        <span class="tool">🍲 BeautifulSoup</span>
+        <span class="tool">🌐 Selenium</span>
+        <span class="tool">🧭 XPath</span>
+        <span class="tool">🔗 Requests</span>
+        <span class="tool">🐼 pandas</span>
+        <span class="tool">🗄️ SQLite / PostgreSQL</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Building Scalable Data Pipelines · Bootcamp Data Engineering Batch 13</p>
+      <p style="margin-top:8px;font-size:13px;">By Risdan Kristori · <a href="https://github.com/thosangs/dibimbing_scraping">github.com/thosangs/dibimbing_scraping</a></p>
+    </div>
+  </footer>
+</body>
+</html>

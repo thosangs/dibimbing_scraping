@@ -1,0 +1,16 @@
+# Python / uv
+.venv/
+__pycache__/
+*.pyc
+.uv/
+
+# Output data hasil scraping
+data/*.csv
+data/*.db
+data/*.sqlite
+data/*.json
+
+# Editor
+.vscode/
+.idea/
+.DS_Store

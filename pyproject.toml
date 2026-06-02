@@ -1,0 +1,23 @@
+[project]
+name = "dibimbing-scraping"
+version = "0.1.0"
+description = "Building Scalable Data Pipelines - Web Scraping & API Integration (Day 26 Bootcamp Data Engineering)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.2",
+    "selenium>=4.27",
+    "pandas>=2.2",
+]
+
+# Dependency opsional untuk PostgreSQL (Langkah 8 versi Postgres).
+# Install dengan:  uv sync --extra postgres
+[project.optional-dependencies]
+postgres = [
+    "psycopg2-binary>=2.9",
+]
+
+[tool.uv]
+# Tidak ada konfigurasi khusus; default uv sudah cukup untuk kelas.
