@@ -5,7 +5,7 @@
 <h1 align="center">Building Scalable Data Pipelines</h1>
 
 <p align="center">
-  <b>Day 26 · Bootcamp Data Engineering</b><br/>
+  <b>Hands-on Data Engineering</b><br/>
   Web Scraping (BeautifulSoup + Selenium + XPath) & API Integration untuk E-Commerce
 </p>
 

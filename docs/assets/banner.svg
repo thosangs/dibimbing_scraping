@@ -16,7 +16,7 @@
   </defs>
   <rect width="1280" height="320" fill="url(#bg)"/>
   <rect width="1280" height="320" fill="url(#glow)"/>
-  <text x="64" y="96" fill="#9aa6c4" font-size="20" font-weight="600" letter-spacing="3">DAY 26 · BOOTCAMP DATA ENGINEERING</text>
+  <text x="64" y="96" fill="#9aa6c4" font-size="20" font-weight="600" letter-spacing="3">HANDS-ON DATA ENGINEERING</text>
   <text x="60" y="170" fill="url(#title)" font-size="60" font-weight="800">Building Scalable Data Pipelines</text>
   <text x="64" y="214" fill="#c7d0e6" font-size="24" font-weight="500">Web Scraping (BeautifulSoup · Selenium · XPath) &amp; API Integration</text>
   <!-- pipeline chips -->

@@ -1,7 +1,7 @@
 [project]
 name = "dibimbing-scraping"
 version = "0.1.0"
-description = "Building Scalable Data Pipelines - Web Scraping & API Integration (Day 26 Bootcamp Data Engineering)"
+description = "Building Scalable Data Pipelines - Web Scraping & API Integration (Hands-on Data Engineering)"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
