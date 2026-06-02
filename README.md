@@ -122,10 +122,13 @@ satu alur cerita — enak untuk dijelaskan sel-per-sel di depan kelas:
 
 ```bash
 uv sync --extra notebook                 # install JupyterLab + ipykernel
-uv run jupyter lab notebooks/walkthrough.ipynb
+uv run jupyter lab                        # buka, lalu pilih notebook di folder notebooks/
 ```
 
-File: [`notebooks/walkthrough.ipynb`](notebooks/walkthrough.ipynb)
+Notebook yang tersedia:
+
+- [`notebooks/walkthrough.ipynb`](notebooks/walkthrough.ipynb) — walkthrough seluruh pipeline (semua langkah dalam satu alur).
+- [`notebooks/beautifulsoup_vs_xpath.ipynb`](notebooks/beautifulsoup_vs_xpath.ipynb) — fokus **cara memilih elemen** (tag, class, id, atribut `aria`/`href`/`data-*`, teks, navigasi) dari mudah ke kompleks, tiap case dibandingkan **BeautifulSoup vs XPath**.
 
 ### Pipeline lengkap (end-to-end)
 
@@ -153,7 +156,8 @@ dibimbing_scraping/
 ├── .python-version             # Python 3.12
 ├── pipeline.py                 # pipeline lengkap (extract -> transform -> load)
 ├── notebooks/
-│   └── walkthrough.ipynb       # walkthrough semua langkah dalam 1 notebook
+│   ├── walkthrough.ipynb            # walkthrough semua langkah dalam 1 notebook
+│   └── beautifulsoup_vs_xpath.ipynb # cara memilih elemen: BS4 vs XPath (mudah->kompleks)
 ├── steps/                      # materi step-by-step
 │   ├── 01_pipeline_overview.py
 │   ├── 02_bs4_satu_item.py
