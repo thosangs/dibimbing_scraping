@@ -29,18 +29,18 @@ from selenium.webdriver.common.by import By
 URL = "https://quotes.toscrape.com/js/"
 
 
-def buat_driver(headless: bool = True) -> webdriver.Chrome:
+def buat_driver(headless: bool = False) -> webdriver.Chrome:
     options = Options()
     if headless:
+        # mode tanpa jendela browser (opsional)
         options.add_argument("--headless=new")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
+    # Selenium Manager otomatis menyiapkan driver yang cocok
     return webdriver.Chrome(options=options)
 
 
 def main() -> None:
-    driver = buat_driver(headless=True)
+    driver = buat_driver()
     try:
         driver.get(URL)
 

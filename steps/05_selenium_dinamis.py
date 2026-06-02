@@ -12,11 +12,14 @@ Kenapa butuh Selenium?
 Selenium bisa dipakai untuk: klik tombol, scroll, login, dan mengambil data
 dari website dinamis.
 
-CATATAN VM (headless):
-  Di VM tanpa tampilan layar, kita pakai mode HEADLESS (browser tanpa GUI).
+CATATAN DRIVER:
   Driver di-download OTOMATIS oleh Selenium Manager (bawaan Selenium >= 4.6),
-  jadi tidak perlu install ChromeDriver manual. Pastikan Chrome/Chromium
-  sudah terpasang di VM (lihat README).
+  jadi TIDAK perlu install ChromeDriver manual. Cukup pastikan browser
+  Chrome/Chromium sudah terpasang (lihat README).
+
+  Secara default browser akan TERLIHAT (headless=False) supaya kita bisa
+  menyaksikan otomasinya saat live coding. Set headless=True kalau ingin
+  jalan tanpa membuka jendela browser.
 
 Jalankan:
     uv run python steps/05_selenium_dinamis.py
@@ -29,20 +32,18 @@ from selenium.webdriver.common.by import By
 URL = "https://quotes.toscrape.com/js/"
 
 
-def buat_driver(headless: bool = True) -> webdriver.Chrome:
+def buat_driver(headless: bool = False) -> webdriver.Chrome:
     options = Options()
     if headless:
+        # mode tanpa jendela browser (opsional)
         options.add_argument("--headless=new")
-    # Argumen berikut penting agar Chrome jalan stabil di VM/Linux server
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
     # Selenium Manager otomatis menyiapkan driver yang cocok
     return webdriver.Chrome(options=options)
 
 
 def main() -> None:
-    driver = buat_driver(headless=True)
+    driver = buat_driver()
     try:
         driver.get(URL)
 

@@ -11,7 +11,7 @@ Aktivitas:
 
 Di kelas ini kita pakai DUA pilihan:
   - SQLite   (DEFAULT) -> bawaan Python, TIDAK perlu install server apa pun.
-                          Cocok untuk VM dan latihan cepat.
+                          Cocok untuk latihan cepat.
   - PostgreSQL (opsional) -> sesuai contoh di guideline. Aktifkan dengan
                           install psycopg2:  uv sync --extra postgres
 

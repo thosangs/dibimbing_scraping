@@ -78,30 +78,24 @@ uv sync --extra postgres
 
 ---
 
-## Setup di VM (PENTING untuk Selenium)
+## Setup untuk Selenium
 
-Karena dijalankan di **VM** (bukan layar lokal), Selenium dipakai dalam mode
-**headless** (browser tanpa GUI). Yang perlu disiapkan:
+### 1. Install browser (Chrome/Chromium)
 
-### 1. Install browser (Chrome/Chromium) di VM
-
-**Ubuntu/Debian:**
-
-```bash
-sudo apt update
-sudo apt install -y chromium-browser
-# atau Google Chrome:
-# wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-# sudo apt install -y ./google-chrome-stable_current_amd64.deb
-```
+Selenium butuh browser sungguhan. Pastikan **Google Chrome** atau **Chromium**
+sudah terpasang di komputer. Kalau sudah biasa pakai Chrome, tidak perlu
+install apa-apa lagi.
 
 ### 2. Driver TIDAK perlu diinstall manual
 
 Selenium >= 4.6 punya **Selenium Manager** yang otomatis men-download
 ChromeDriver/GeckoDriver yang cocok dengan versi browser. Jadi tidak ada
 langkah install ChromeDriver manual — ini alasan kita pakai setup ini biar
-gampang. Script Selenium di project ini sudah memakai argumen `--headless=new`,
-`--no-sandbox`, dan `--disable-dev-shm-usage` agar stabil di server.
+gampang.
+
+> Secara default browser akan **terlihat** saat dijalankan, jadi kita bisa
+> menyaksikan otomasinya saat demo. Kalau ingin jalan tanpa membuka jendela
+> browser, panggil `buat_driver(headless=True)` di dalam script Selenium.
 
 ---
 
