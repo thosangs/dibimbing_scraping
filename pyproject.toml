@@ -32,6 +32,18 @@ news-nlp = [
     "newspaper4k>=0.9.3",
     "nltk>=3.8",
 ]
+# Untuk notebook e-commerce (extruct + price-parser + Scrapy):  uv sync --extra ecommerce
+ecommerce = [
+    "extruct>=0.16",
+    "price-parser>=0.3.4",
+    "scrapy>=2.11",
+]
+# Pola page object (opsional, butuh setup project Scrapy):  uv sync --extra ecommerce-advanced
+ecommerce-advanced = [
+    "scrapy>=2.11",
+    "scrapy-poet>=0.24",
+    "zyte-common-items>=0.26",
+]
 
 [tool.uv]
 # Tidak ada konfigurasi khusus; default uv sudah cukup untuk kelas.
