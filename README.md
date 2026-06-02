@@ -130,6 +130,17 @@ Notebook yang tersedia:
 - [`notebooks/walkthrough.ipynb`](notebooks/walkthrough.ipynb) — walkthrough seluruh pipeline (semua langkah dalam satu alur).
 - [`notebooks/beautifulsoup_vs_xpath.ipynb`](notebooks/beautifulsoup_vs_xpath.ipynb) — fokus **cara memilih elemen** (tag, class, id, atribut `aria`/`href`/`data-*`, teks, navigasi) dari mudah ke kompleks, tiap case dibandingkan **BeautifulSoup vs XPath**.
 
+**`notebooks/cases/` — kasus-kasus "susah" (satu notebook per kasus):**
+
+- [`cases/01_pagination.ipynb`](notebooks/cases/01_pagination.ipynb) — pagination kompleks (ikuti tombol Next sampai habis; requests vs Selenium).
+- [`cases/02_infinite_scroll.ipynb`](notebooks/cases/02_infinite_scroll.ipynb) — lazy-load / infinite scroll (hidden API vs Selenium scroll).
+- [`cases/03_webdriverwait.ipynb`](notebooks/cases/03_webdriverwait.ipynb) — `WebDriverWait` + `expected_conditions` (menunggu elemen dengan benar).
+- [`cases/04_tables.ipynb`](notebooks/cases/04_tables.ipynb) — tabel HTML pakai `pandas.read_html` (one-liner).
+
+**`notebooks/misc/` — library bantu:**
+
+- [`misc/newspaper3k.ipynb`](notebooks/misc/newspaper3k.ipynb) — parsing artikel berita otomatis (multi-source) dengan `newspaper4k`. Butuh `uv sync --extra news`.
+
 ### Pipeline lengkap (end-to-end)
 
 ```bash
@@ -157,7 +168,14 @@ dibimbing_scraping/
 ├── pipeline.py                 # pipeline lengkap (extract -> transform -> load)
 ├── notebooks/
 │   ├── walkthrough.ipynb            # walkthrough semua langkah dalam 1 notebook
-│   └── beautifulsoup_vs_xpath.ipynb # cara memilih elemen: BS4 vs XPath (mudah->kompleks)
+│   ├── beautifulsoup_vs_xpath.ipynb # cara memilih elemen: BS4 vs XPath (mudah->kompleks)
+│   ├── cases/                       # kasus-kasus "susah" (1 notebook per kasus)
+│   │   ├── 01_pagination.ipynb
+│   │   ├── 02_infinite_scroll.ipynb
+│   │   ├── 03_webdriverwait.ipynb
+│   │   └── 04_tables.ipynb
+│   └── misc/
+│       └── newspaper3k.ipynb        # parsing artikel berita (newspaper4k)
 ├── steps/                      # materi step-by-step
 │   ├── 01_pipeline_overview.py
 │   ├── 02_bs4_satu_item.py

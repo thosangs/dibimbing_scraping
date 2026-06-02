@@ -23,6 +23,15 @@ notebook = [
     "jupyterlab>=4.2",
     "ipykernel>=6.29",
 ]
+# Untuk notebook parsing artikel berita (notebooks/misc):  uv sync --extra news
+news = [
+    "newspaper4k>=0.9.3",
+]
+# Tambahan fitur NLP (keyword & ringkasan) untuk newspaper:  uv sync --extra news-nlp
+news-nlp = [
+    "newspaper4k>=0.9.3",
+    "nltk>=3.8",
+]
 
 [tool.uv]
 # Tidak ada konfigurasi khusus; default uv sudah cukup untuk kelas.
