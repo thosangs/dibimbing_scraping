@@ -115,6 +115,18 @@ Jalankan dengan `uv run` (uv otomatis pakai environment yang benar):
 | 8       | Cleaning data (pandas)                  | `uv run python steps/08_cleaning.py`              |
 | 9       | Simpan ke database (SQLite/Postgres)    | `uv run python steps/09_simpan_database.py`       |
 
+### Notebook walkthrough (untuk live coding)
+
+Selain script per-langkah, ada juga **notebook** yang merangkai semua materi dalam
+satu alur cerita — enak untuk dijelaskan sel-per-sel di depan kelas:
+
+```bash
+uv sync --extra notebook                 # install JupyterLab + ipykernel
+uv run jupyter lab notebooks/walkthrough.ipynb
+```
+
+File: [`notebooks/walkthrough.ipynb`](notebooks/walkthrough.ipynb)
+
 ### Pipeline lengkap (end-to-end)
 
 ```bash
@@ -140,6 +152,8 @@ dibimbing_scraping/
 ├── pyproject.toml              # dependency (dikelola uv)
 ├── .python-version             # Python 3.12
 ├── pipeline.py                 # pipeline lengkap (extract -> transform -> load)
+├── notebooks/
+│   └── walkthrough.ipynb       # walkthrough semua langkah dalam 1 notebook
 ├── steps/                      # materi step-by-step
 │   ├── 01_pipeline_overview.py
 │   ├── 02_bs4_satu_item.py

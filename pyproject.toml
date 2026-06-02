@@ -18,6 +18,11 @@ dependencies = [
 postgres = [
     "psycopg2-binary>=2.9",
 ]
+# Untuk menjalankan notebook walkthrough:  uv sync --extra notebook
+notebook = [
+    "jupyterlab>=4.2",
+    "ipykernel>=6.29",
+]
 
 [tool.uv]
 # Tidak ada konfigurasi khusus; default uv sudah cukup untuk kelas.
