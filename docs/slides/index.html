@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slides &middot; Building Scalable Data Pipelines</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css" id="theme" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css" />
+
+  <style>
+    :root {
+      --brand-bg: #0b1020;
+      --brand-bg2: #16204a;
+      --brand-blue: #6ea8fe;
+      --brand-violet: #8b5cf6;
+      --brand-ink: #e7ecf6;
+      --brand-muted: #9aa6c4;
+    }
+    .reveal { font-family: "Inter", "Segoe UI", system-ui, sans-serif; color: var(--brand-ink); }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section { background: transparent; }
+    /* gradient backdrop */
+    body.reveal-viewport {
+      background: radial-gradient(70% 70% at 50% 0%, #1b2a5e 0%, var(--brand-bg) 55%, #070a16 100%);
+    }
+    .reveal h1, .reveal h2, .reveal h3 { color: #fff; text-transform: none; letter-spacing: -0.01em; font-weight: 800; }
+    .reveal h1 {
+      background: linear-gradient(90deg, #fff 0%, var(--brand-blue) 55%, var(--brand-violet) 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .reveal section h2 { font-size: 1.7em; margin-bottom: 0.4em; }
+    .reveal a { color: var(--brand-blue); }
+    .reveal strong { color: #fff; }
+    .reveal em { color: var(--brand-blue); font-style: normal; }
+    .reveal .eyebrow {
+      color: var(--brand-muted); font-size: 0.5em; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 0.5em;
+    }
+    .reveal code { font-family: "JetBrains Mono", "SFMono-Regular", Menlo, monospace; }
+    .reveal pre { width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.45); border-radius: 12px; }
+    .reveal pre code { border-radius: 12px; padding: 18px 22px; font-size: 0.78em; line-height: 1.45; }
+    .reveal table { font-size: 0.74em; }
+    .reveal table th { color: var(--brand-blue); border-bottom: 2px solid #2a3766; }
+    .reveal table td, .reveal table th { padding: 0.3em 0.7em; }
+    .reveal ul, .reveal ol { display: block; }
+    .reveal li { margin: 0.28em 0; }
+    .reveal .chip {
+      display: inline-block; padding: 4px 14px; margin: 4px 6px 4px 0; border-radius: 999px;
+      background: #161f3d; border: 1px solid #25325c; color: var(--brand-ink); font-size: 0.6em; font-weight: 600;
+    }
+    .reveal blockquote {
+      background: rgba(110,168,254,0.08); border-left: 4px solid var(--brand-blue);
+      width: 100%; box-shadow: none; font-size: 0.8em; padding: 0.6em 1em;
+    }
+    .reveal .footer {
+      position: fixed; bottom: 12px; left: 18px; font-size: 13px; color: var(--brand-muted); z-index: 30;
+    }
+    .reveal .footer a { color: var(--brand-muted); text-decoration: none; }
+    .reveal .progress { color: var(--brand-violet); }
+    .reveal .small { font-size: 0.7em; color: var(--brand-muted); }
+    .reveal .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; align-items: start; }
+  </style>
+</head>
+<body>
+  <div class="footer">
+    <a href="../">&larr; Project home</a> &nbsp;&middot;&nbsp;
+    <a href="https://github.com/thosangs/dibimbing_scraping">GitHub repo</a>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+      <section data-markdown
+               data-separator="\r?\n---\r?\n"
+               data-separator-notes="^Note:">
+<textarea data-template>
+<div class="eyebrow">Hands-on Data Engineering</div>
+
+# Building Scalable Data Pipelines
+
+**Web Scraping** with BeautifulSoup, Selenium & XPath
+plus API Integration for E-Commerce
+
+<span class="chip">requests</span><span class="chip">BeautifulSoup</span><span class="chip">Selenium</span><span class="chip">Scrapy</span><span class="chip">pandas</span><span class="chip">uv</span>
+
+<p class="small">Use the arrow keys or space to navigate &middot; press <strong>S</strong> for speaker notes &middot; <strong>F</strong> for fullscreen</p>
+
+Note:
+Welcome. This deck mirrors the repo: every topic maps to a runnable script in `steps/` or a notebook in `notebooks/`.
+
+---
+
+## Agenda
+
+1. What is scraping — and when to use an **API** instead
+2. The data pipeline: **Extract &rarr; Transform &rarr; Load**
+3. Static pages: **requests + BeautifulSoup**
+4. Selecting elements: **BeautifulSoup vs XPath**
+5. Dynamic pages: **Selenium** + explicit waits
+6. Hard cases: pagination, infinite scroll, tables
+7. Specialized tools: news & e-commerce
+8. **Security lab**: anti-bot — red team vs blue team
+9. Ethics, cleaning & storage
+
+---
+
+## Scraping vs API
+
+<div class="two-col">
+<div>
+
+**Use an API when one exists**
+- Stable, documented, structured (JSON)
+- Faster, less likely to break
+- Usually the *intended* way to get data
+
+</div>
+<div>
+
+**Scrape the HTML when**
+- No API is available
+- Data only lives in the page
+- One-off / exploratory tasks
+
+</div>
+</div>
+
+> Golden rule: **check for a hidden/official API first** (open DevTools &rarr; Network &rarr; XHR). Many "scraping" problems are really API problems.
+
+---
+
+## The pipeline: E &rarr; T &rarr; L
+
+```text
+EXTRACT            TRANSFORM             LOAD
+requests / API  →  clean with pandas  →  CSV
+Selenium        →  normalize types    →  SQLite
+                   dedupe / validate     PostgreSQL
+```
+
+Each stage is one runnable file in `steps/`:
+
+<span class="chip">01 overview</span><span class="chip">02–04 BeautifulSoup</span><span class="chip">05–06 Selenium</span><span class="chip">07 API</span><span class="chip">08 cleaning</span><span class="chip">09 database</span>
+
+Note:
+The whole thing is also wired together in `pipeline.py` — run `uv run python pipeline.py --pages 5`.
+
+---
+
+## Tooling: managed with `uv`
+
+```bash
+# one-time
+uv sync                       # core deps
+uv sync --extra notebook      # JupyterLab
+
+# run anything
+uv run python steps/02_bs4_satu_item.py
+uv run python pipeline.py --pages 5
+```
+
+- `uv` = fast Python package & venv manager
+- **Selenium Manager** auto-installs the browser driver — no manual chromedriver
+- Optional extras: `news`, `ecommerce`, `security`, `postgres`
+
+---
+
+## Static scraping: requests + BeautifulSoup
+
+```python
+import requests
+from bs4 import BeautifulSoup
+
+resp = requests.get("https://books.toscrape.com/")
+resp.encoding = "utf-8"                      # avoid £ -> Â£
+soup = BeautifulSoup(resp.text, "lxml")
+
+for card in soup.select("article.product_pod"):
+    title = card.h3.a["title"]
+    price = card.select_one("p.price_color").text
+    print(title, price)
+```
+
+Three things: **fetch** (requests) &rarr; **parse** (BeautifulSoup) &rarr; **select** (CSS).
+
+---
+
+## Selecting elements: BeautifulSoup vs XPath
+
+| Goal | BeautifulSoup | XPath (lxml) |
+|---|---|---|
+| By id | `find(id="x")` | `//*[@id="x"]` |
+| By class | `find_all(class_="card")` | `//*[contains(@class,"card")]` |
+| By attribute | `find(attrs={"aria-label":"Next"})` | `//*[@aria-label="Next"]` |
+| Get href | `a["href"]` | `//a/@href` |
+| Starts-with | `re.compile(r"^/product/")` | `starts-with(@href,"/product/")` |
+| Text contains | `string=re.compile("Sale")` | `//*[contains(text(),"Sale")]` |
+
+<p class="small">Full walkthrough (easy &rarr; hard): <code>notebooks/beautifulsoup_vs_xpath.ipynb</code></p>
+
+---
+
+## Token-safe class matching (gotcha)
+
+`contains(@class,"product")` also matches `product-list`. Match the **whole token**:
+
+```python
+# XPath: match the exact class token "product"
+'//div[contains(concat(" ", normalize-space(@class), " "), " product ")]'
+```
+
+> Substring matching is the #1 source of "why did it grab the wrong element?"
+
+---
+
+## Dynamic pages: Selenium
+
+When content is rendered by JavaScript, `requests` sees an empty shell. Drive a real browser:
+
+```python
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
+WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.CSS_SELECTOR, ".quote"))
+)
+```
+
+**Use explicit waits, not `time.sleep()`** — faster *and* more reliable.
+
+Note:
+`time.sleep` is both too slow (you wait the full time) and too fragile (sometimes not long enough). WebDriverWait polls until the condition is true.
+
+---
+
+## Hard cases (each has its own notebook)
+
+<div class="two-col">
+<div>
+
+**Pagination**
+follow "Next" links / click "Next"
+
+**Infinite scroll**
+hidden API *or* scroll-until-stable
+
+</div>
+<div>
+
+**Explicit waits**
+`WebDriverWait` + `expected_conditions`
+
+**HTML tables**
+`pandas.read_html()` one-liner
+
+</div>
+</div>
+
+```python
+import pandas as pd
+tables = pd.read_html(html, flavor="lxml", match="Currency", thousands=".")
+```
+
+<p class="small"><code>notebooks/cases/01_pagination &middot; 02_infinite_scroll &middot; 03_webdriverwait &middot; 04_tables</code></p>
+
+---
+
+## Specialized tools
+
+<div class="two-col">
+<div>
+
+**News articles** — `newspaper4k`
+
+```python
+from newspaper import Article
+a = Article(url)
+a.download(); a.parse()
+print(a.title, a.text)
+```
+One line, clean text, multi-source.
+
+</div>
+<div>
+
+**E-commerce**
+- `extruct` — JSON-LD structured data
+- `price-parser` — `"Rp4.200.000"` &rarr; `4200000.0`
+- `Scrapy` — async crawling at scale
+
+</div>
+</div>
+
+---
+
+## Scrapy: why async matters
+
+```python
+custom_settings = {
+    "CONCURRENT_REQUESTS": 16,     # 16 requests in flight
+    "AUTOTHROTTLE_ENABLED": True,  # be polite automatically
+    "ROBOTSTXT_OBEY": True,
+}
+```
+
+Same 240 items, just changing concurrency:
+
+| Concurrency | Time |
+|---|---|
+| 1 (synchronous) | ~1.0&times; (baseline) |
+| 16 (async) | **~2&times; faster** |
+
+> Scrapy's event loop overlaps network waits — the CPU isn't the bottleneck, the *network* is.
+
+---
+
+## Security lab: anti-bot (Red vs Blue)
+
+Real e-commerce sites fight scrapers. To **defend**, you must understand the **attack**.
+
+A real escalation ladder against a live site:
+
+| Lvl | Red-team technique | Result |
+|---|---|---|
+| 0 | plain `requests` (Python UA) | **403 blocked** |
+| 1 | full browser headers | sometimes passes |
+| 2 | TLS fingerprint spoofing (JA3) | sometimes passes |
+| 3 | warm-up cookie + TLS impersonate | **gets through** |
+
+<p class="small">Lab notebook: <code>notebooks/misc/scrapy_real_case.ipynb</code> (with a glossary)</p>
+
+Note:
+This is for defensive security education. We only touch public data, minimal requests, and the point is to learn how to PREVENT each technique.
+
+---
+
+## Key terms (glossary)
+
+- **UA (User-Agent)** — string a client sends to identify itself
+- **WAF** — Web Application Firewall; filters malicious / bot traffic
+- **TLS fingerprint (JA3/JA4)** — signature of *how* a client negotiates HTTPS; Python looks different from Chrome
+- **Cookie / warm-up** — visiting a page first to obtain a bot-management cookie
+- **Headless browser** — a real browser with no visible window
+
+---
+
+## Blue team: defense in depth
+
+| Attack | Defense |
+|---|---|
+| Fake User-Agent | header anomaly detection |
+| TLS impersonation | **JA3/JA4 fingerprinting** |
+| Cookie warm-up | **managed / JS challenge** |
+| Headless browser | `navigator.webdriver`, behavior biometrics |
+| Proxy rotation, scale | rate limiting, IP reputation |
+| Everything | **honeytokens**, monitoring & alerting |
+
+> No silver bullet — **layers** raise the attacker's cost.
+
+---
+
+## Ethics & `robots.txt`
+
+```python
+import urllib.robotparser as rp
+r = rp.RobotFileParser()
+r.set_url("https://example.com/robots.txt"); r.read()
+r.can_fetch("*", "/some/path")   # True / False
+```
+
+- **"Can scrape" &ne; "may scrape."** Respect `robots.txt` + Terms of Service.
+- Identify yourself (User-Agent), rate-limit, scrape off-peak.
+- Prefer official APIs / licensed data for production.
+
+---
+
+## Transform & Load
+
+```python
+import pandas as pd, sqlite3
+
+df = pd.DataFrame(rows)
+df["price"] = df["price"].str.replace("£", "").astype(float)
+df = df.drop_duplicates()
+
+conn = sqlite3.connect("data/ecommerce.db")
+df.to_sql("products", conn, if_exists="replace", index=False)
+```
+
+Clean &rarr; validate types &rarr; persist to **SQLite** (or PostgreSQL).
+
+---
+
+## Hands-on materials
+
+- `notebooks/walkthrough.ipynb` — the whole pipeline end-to-end
+- `notebooks/beautifulsoup_vs_xpath.ipynb` — selection, easy &rarr; hard
+- `notebooks/cases/` — pagination, infinite scroll, waits, tables
+- `notebooks/misc/` — news, e-commerce toolkit, **anti-bot security lab**
+
+```bash
+uv sync --extra notebook
+uv run jupyter lab
+```
+
+---
+
+<div class="eyebrow">Thank you</div>
+
+# Let's build.
+
+**Repo:** [github.com/thosangs/dibimbing_scraping](https://github.com/thosangs/dibimbing_scraping)
+**Live:** [thosangs.github.io/dibimbing_scraping](https://thosangs.github.io/dibimbing_scraping/)
+
+<p class="small">Questions? Open the notebooks and run them as we go.</p>
+</textarea>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: "c/t",
+      transition: "slide",
+      width: 1180,
+      height: 720,
+      margin: 0.06,
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+    });
+  </script>
+</body>
+</html>
