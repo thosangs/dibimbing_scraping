@@ -44,6 +44,14 @@ ecommerce-advanced = [
     "scrapy-poet>=0.24",
     "zyte-common-items>=0.26",
 ]
+# Lab keamanan anti-bot (notebooks/misc/scrapy_real_case): TLS impersonation, dll.
+# Untuk EDUKASI keamanan (red/blue team).  uv sync --extra security
+security = [
+    "scrapy>=2.11",
+    "price-parser>=0.3.4",
+    "curl-cffi>=0.7",
+    "scrapy-impersonate>=0.5",
+]
 
 [tool.uv]
 # Tidak ada konfigurasi khusus; default uv sudah cukup untuk kelas.

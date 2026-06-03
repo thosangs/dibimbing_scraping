@@ -141,7 +141,7 @@ Notebook yang tersedia:
 
 - [`misc/newspaper3k.ipynb`](notebooks/misc/newspaper3k.ipynb) — parsing artikel berita otomatis (multi-source) dengan `newspaper4k`. Butuh `uv sync --extra news`.
 - [`misc/ecommerce_scraping.ipynb`](notebooks/misc/ecommerce_scraping.ipynb) — toolkit e-commerce: `extruct` (JSON-LD, contoh berhasil & gagal), `price-parser`, **robots.txt** (scraping baik vs buruk), dan **Scrapy** (async — bandingkan waktu `CONCURRENT_REQUESTS` 1 vs 16) + pola `scrapy-poet`/`zyte`. Butuh `uv sync --extra ecommerce`.
-- [`misc/scrapy_real_case.ipynb`](notebooks/misc/scrapy_real_case.ipynb) — **kasus nyata**: recon e-commerce sungguhan (cek `robots.txt` via Protego vs `urllib`, deteksi SPA & anti-bot), keputusan etis "boleh/tidak", lalu **spider Scrapy lengkap** (crawl daftar→detail, pagination, `ROBOTSTXT_OBEY`, AutoThrottle, Items, `price-parser`, ekspor JSON → `pandas`). Butuh `uv sync --extra ecommerce`.
+- [`misc/scrapy_real_case.ipynb`](notebooks/misc/scrapy_real_case.ipynb) — **lab keamanan anti-bot (red vs blue)** pada e-commerce nyata: recon (`robots.txt` via Protego, deteksi SPA + Cloudflare), **tangga eskalasi bypass** (UA → header → sidik jari TLS/JA3 `curl_cffi` → warm-up cookie) yang **benar-benar menembus** API, dikemas jadi **spider Scrapy** (`scrapy-impersonate`) → `pandas`, **plus cara mendeteksi & mencegah tiap teknik**. Untuk edukasi pertahanan. Butuh `uv sync --extra security`.
 
 ### Pipeline lengkap (end-to-end)
 
@@ -179,7 +179,7 @@ dibimbing_scraping/
 │   └── misc/
 │       ├── newspaper3k.ipynb        # parsing artikel berita (newspaper4k)
 │       ├── ecommerce_scraping.ipynb # extruct + price-parser + robots.txt + Scrapy (async)
-│       └── scrapy_real_case.ipynb   # recon e-commerce nyata + spider Scrapy lengkap
+│       └── scrapy_real_case.ipynb   # lab keamanan anti-bot (red/blue) + spider Scrapy nyata
 ├── steps/                      # materi step-by-step
 │   ├── 01_pipeline_overview.py
 │   ├── 02_bs4_satu_item.py
