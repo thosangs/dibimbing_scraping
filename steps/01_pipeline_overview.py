@@ -26,7 +26,7 @@ PIPELINE_STAGES = [
 
 def show_pipeline() -> None:
     print("=" * 50)
-    print("PROJECT FLOW: Building Scalable Data Pipelines")
+    print("PROJECT FLOW: Web Scraping & API Integration")
     print("=" * 50)
     for i, stage in enumerate(PIPELINE_STAGES, start=1):
         print(f"  [{i}] {stage}")

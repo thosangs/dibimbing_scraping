@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="docs/assets/banner.svg" alt="Building Scalable Data Pipelines" width="100%" />
+  <img src="docs/assets/banner.svg" alt="Web Scraping & API Integration" width="100%" />
 </p>
 
-<h1 align="center">Building Scalable Data Pipelines</h1>
+<h1 align="center">Web Scraping & API Integration</h1>
 
 <p align="center">
-  <b>Hands-on Data Engineering</b><br/>
-  Web Scraping (BeautifulSoup + Selenium + XPath) & API Integration for E-Commerce
+  <b>Hands-on Data Extraction</b><br/>
+  Pulling data from e-commerce sites with BeautifulSoup + Selenium + XPath + Scrapy & API Integration
 </p>
 
 <p align="center">

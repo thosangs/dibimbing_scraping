@@ -1,7 +1,7 @@
 ---
 theme: default
-title: Building Scalable Data Pipelines
-info: Web scraping & API integration for e-commerce — hands-on data engineering.
+title: Web Scraping & API Integration
+info: Hands-on web scraping & API integration — extracting data from e-commerce sites.
 class: text-left
 transition: slide-left
 mdc: true
@@ -16,14 +16,14 @@ drawings:
   enabled: false
 ---
 
-<div class="eyebrow">Hands-on Data Engineering</div>
+<div class="eyebrow">Hands-on Data Extraction</div>
 
-# Building Scalable Data Pipelines
+# Web Scraping &amp; API Integration
 
-#### Web Scraping &amp; API Integration for E-Commerce
+#### Pulling Data from E-Commerce Sites
 
 <div class="mt-10 opacity-80">
-  From a single <code>requests.get()</code> to a concurrent, ethical, production-grade crawler — and the security lab that explains why bot defenses exist.
+  From a single <code>requests.get()</code> to a concurrent, ethical crawler — BeautifulSoup, XPath, Selenium &amp; Scrapy, plus the security lab that explains why bot defenses exist.
 </div>
 
 <div class="abs-br m-6 text-sm opacity-60">
@@ -706,7 +706,7 @@ layout: end
 
 <div class="eyebrow">You're ready</div>
 
-# Go build the pipeline
+# Go start scraping
 
 <div class="mt-4 text-lg">
   <span class="chip">walkthrough.ipynb</span>

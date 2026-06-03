@@ -1,6 +1,6 @@
 """
-COMPLETE PIPELINE - Building Scalable Data Pipelines
-====================================================
+COMPLETE PIPELINE - Web Scraping & API Integration
+==================================================
 
 Combines all the steps into one end-to-end pipeline, following this flow:
 
