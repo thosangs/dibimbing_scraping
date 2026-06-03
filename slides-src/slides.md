@@ -44,8 +44,8 @@ layout: section
   <div>3 — <code>requests</code> + BeautifulSoup fundamentals</div>
   <div>4 — BeautifulSoup vs XPath, easy → hard</div>
   <div>5 — Dynamic pages with Selenium &amp; explicit waits</div>
-  <div>6 — Hard cases: pagination, infinite scroll, tables</div>
-  <div>7 — Specialized tools: newspaper4k, extruct, Scrapy</div>
+  <div>6 — Four hard cases, one slide each</div>
+  <div>7 — Specialized + no-code extraction tools</div>
   <div>8 — Security lab: bot defenses &amp; how to respect them</div>
 </div>
 
@@ -269,86 +269,287 @@ layout: section
   <div><span class="gold">04</span> — Data trapped in <code>&lt;table&gt;</code></div>
 </div>
 
+<div class="mt-8 muted">One slide each — what it looks like in the wild, and how to crawl it.</div>
+
 ---
 
-## Hard cases — the playbook
+## Hard case 1 — Complex pagination
 
-<div class="grid grid-cols-2 gap-8 mt-2">
-
-<div>
-
-#### Pagination
-- URL-based: loop `?page=n` with `requests`
-- JS "Load more": click + wait with Selenium
-
-#### Infinite scroll
-- *Best:* find the hidden JSON API in Network
-- *Fallback:* scroll loop + `WebDriverWait`
-
-</div>
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
 
 <div>
 
-#### Explicit waits
-- `presence_of_element_located`
-- `element_to_be_clickable`
-- never `time.sleep()` to "fix" flakiness
+Many listings split results across numbered pages or a **"next"** link.
 
-#### Tables
+- **URL-based** — loop `?page=n` with plain `requests` (cheap &amp; fast)
+- **JS "Load more"** — click the button, then `WebDriverWait` for fresh cards
+- Stop when the **next** link disappears or a page repeats
+
 ```python
-pd.read_html(html, flavor="lxml",
-             thousands=".")[0]
+n = 1
+while True:
+    r = requests.get(f"{base}?page={n}")
+    cards = parse(r.text)
+    if not cards:
+        break
+    n += 1
 ```
 
 </div>
 
+<div>
+
+![Numbered pagination on books.toscrape.com](./images/pagination.png){.shot}
+
+<div class="caption">books.toscrape.com — "Page 1 of 50 · next →"</div>
+
+</div>
+
 </div>
 
 ---
 
-## Specialized extraction tools
+## Hard case 2 — Lazy-load / infinite scroll
 
-<div class="grid grid-cols-3 gap-6 mt-4">
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
 
-<div class="card">
+<div>
 
-#### newspaper4k
+New items appear only as you scroll — there are **no page numbers**.
+
+- *Best:* find the hidden **JSON API** the page calls (DevTools → Network → XHR)
+- *Fallback:* scroll loop in Selenium until the count stops growing
+
+```python
+last = 0
+while True:
+    driver.execute_script(
+        "window.scrollTo(0, document.body.scrollHeight)")
+    WebDriverWait(driver, 10).until(more_loaded)
+    n = len(driver.find_elements(By.CSS_SELECTOR, ".quote"))
+    if n == last: break
+    last = n
+```
+
+</div>
+
+<div>
+
+![Infinite scroll loading more quotes](./images/infinite-scroll.gif){.shot}
+
+<div class="caption">quotes.toscrape.com/scroll — 10 → 20 → 30 items as you scroll</div>
+
+</div>
+
+</div>
+
+---
+
+## Hard case 3 — `WebDriverWait` done right
+
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+
+<div>
+
+The first HTML response is often an **empty shell** — JavaScript fills it in later, so `requests` sees nothing.
+
+- Render in a real browser, then **wait for the element**, not the clock
+- `presence_of_element_located` · `visibility_of` · `element_to_be_clickable`
+- Never paper over flakiness with `time.sleep()`
+
+```python
+el = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located(
+        (By.CSS_SELECTOR, ".quote")))
+```
+
+</div>
+
+<div>
+
+![Raw HTML is empty until JavaScript renders the content](./images/dynamic-content.png){.shot}
+
+<div class="caption">Left: what <code>requests</code> sees · Right: what the browser renders</div>
+
+</div>
+
+</div>
+
+---
+
+## Hard case 4 — Data trapped in `<table>`
+
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+
+<div>
+
+Don't hand-walk `<tr>`/`<td>` — let pandas read the whole table at once.
+
+- `pd.read_html` returns a **list of DataFrames**
+- Handle thousands separators &amp; the right header row
+- Then clean, type-cast, and load like any other source
+
+```python
+import pandas as pd
+tables = pd.read_html(html, flavor="lxml",
+                      thousands=",")
+df = tables[0]          # pick the right one
+df = df.dropna(how="all")
+```
+
+</div>
+
+<div>
+
+![A sortable data table on Wikipedia](./images/tables.png){.shot}
+
+<div class="caption">Wikipedia — countries by population (a classic <code>&lt;table&gt;</code>)</div>
+
+</div>
+
+</div>
+
+---
+layout: section
+---
+
+<div class="eyebrow">notebooks/misc</div>
+
+# Specialized extraction tools
+
+<div class="grid grid-cols-3 gap-x-8 gap-y-2 mt-6 text-lg">
+  <div><span class="gold">newspaper4k</span> — article text</div>
+  <div><span class="gold">extruct</span> — schema.org data</div>
+  <div><span class="gold">price-parser</span> — money &amp; locale</div>
+</div>
+
+<div class="mt-8 muted">Stop reinventing parsers — reach for the tool built for the job.</div>
+
+---
+
+## newspaper4k — clean article text in one call
+
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+
+<div>
 
 ```python
 from newspaper import Article
-a = Article(url)
-a.download(); a.parse()
-print(a.title, a.text)
-```
 
-One call → clean article text, even across many news sources.
+a = Article("https://news.site/story")
+a.download()
+a.parse()
+
+a.title          # headline
+a.text           # body, boilerplate stripped
+a.authors        # byline
+a.publish_date   # parsed datetime
+```
 
 </div>
 
-<div class="card">
+<div>
 
-#### extruct
+- Strips nav, ads &amp; footers — just the **story**
+- Works across **many news sources** with the same code
+- Also pulls title, authors, top image, publish date
+- Great for building a news corpus fast
+
+<div class="mt-3 muted">When you need readable text, not a bespoke selector per site.</div>
+
+</div>
+
+</div>
+
+---
+
+## extruct — read the structured data shops already embed
+
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+
+<div>
 
 ```python
 import extruct
-data = extruct.extract(
-    html, syntaxes=["json-ld"])
-```
 
-Reads **schema.org** structured data shops already embed.
+data = extruct.extract(
+    html,
+    syntaxes=["json-ld", "microdata", "opengraph"],
+)
+product = data["json-ld"][0]
+product["name"], product["offers"]["price"]
+```
 
 </div>
 
-<div class="card">
+<div>
 
-#### price-parser
+- Most e-commerce ships **schema.org** JSON-LD for SEO
+- Read `name`, `price`, `sku`, `availability` — **no fragile selectors**
+- Survives redesigns far better than CSS/XPath
+- *Reality check:* not every site provides it → have a fallback
+
+<div class="mt-3 muted">Always check the page source for a <code>&lt;script type="application/ld+json"&gt;</code> first.</div>
+
+</div>
+
+</div>
+
+---
+
+## price-parser — currency &amp; locale-aware numbers
+
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+
+<div>
 
 ```python
 from price_parser import Price
-Price.fromstring("Rp 1.250.000").amount
+
+Price.fromstring("Rp 1.250.000").amount   # 1250000
+Price.fromstring("£16.99").amount          # 16.99
+Price.fromstring("$1,299.00").currency     # "$"
 ```
 
-Currency &amp; locale-aware numeric parsing.
+</div>
+
+<div>
+
+- Handles `.` vs `,` as thousands / decimal across locales
+- Separates the **amount** from the **currency** symbol
+- Far safer than `re.sub(r"[^\d]", "", text)`
+- One less source of silent data-quality bugs
+
+<div class="mt-3 muted">The "Transform" step of ETL, solved for money.</div>
+
+</div>
+
+</div>
+
+---
+
+## No-code option — Instant Data Scraper (Chrome)
+
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+
+<div>
+
+A browser **extension** that auto-detects the main table/list on a page and exports **CSV / XLSX** — no code.
+
+- Great for **quick one-offs** &amp; for non-developers
+- It even clicks **"Next"** to follow pagination
+- Limits: brittle on heavy JS, hard to schedule, no version control
+- Use it to **prototype**, then graduate to `requests` / Scrapy for production
+
+<div class="mt-3 muted">Knowing the no-code path helps you scope when real code is worth it.</div>
+
+</div>
+
+<div>
+
+![Instant Data Scraper on the Chrome Web Store](./images/instant-data-scraper.png){.shot}
+
+<div class="caption">Chrome Web Store — point, detect, export to CSV/XLSX</div>
 
 </div>
 
@@ -409,6 +610,34 @@ Educational use only — always obey <code>robots.txt</code>, Terms of Service, 
 
 ---
 
+## What a block actually looks like
+
+<div class="mt-2">
+
+![Typical anti-bot block pages: 403, JS challenge, 429](./images/block-pages.png){.shot}
+
+</div>
+
+<div class="grid grid-cols-2 gap-x-10 mt-5">
+
+<div>
+
+- A request can **return HTTP 200** yet contain a challenge, not your data
+- Watch for tiny HTML, a "verify you are human" box, or a `Retry-After`
+
+</div>
+
+<div>
+
+- Triggered by default User-Agents, datacenter IPs, no JS, or too-fast rates
+- **Blue team takeaway:** these screens are the signal your defenses fired
+
+</div>
+
+</div>
+
+---
+
 ## The escalation ladder
 
 | Level | Technique | Typical result vs a WAF |
@@ -461,15 +690,12 @@ Educational use only — always obey <code>robots.txt</code>, Terms of Service, 
 <div class="mt-5">Defense in depth: no single check is enough — <span class="gold">layer them</span>.</div>
 
 ---
-layout: center
-class: text-center
----
 
 <div class="eyebrow">The ethical line</div>
 
 ## Scrape responsibly
 
-<div class="mt-6 text-xl max-w-2xl mx-auto leading-relaxed">
+<div class="mt-6 text-xl max-w-3xl leading-relaxed">
 Respect <code>robots.txt</code> and Terms of Service · throttle your requests · cache &amp; never re-hammer ·
 identify your bot · <span class="gold">prefer official APIs</span> · collect only what you need.
 </div>

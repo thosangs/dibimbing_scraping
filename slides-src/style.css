@@ -185,6 +185,43 @@
   background-color: #0a1024;
 }
 
+/* "Not center": divider/section slides should flow from the top-left like the
+   content slides, instead of being vertically & horizontally centered. */
+.slidev-layout.section,
+.slidev-layout.center {
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+}
+.slidev-layout.section > *,
+.slidev-layout.center > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  width: 100%;
+  text-align: left !important;
+}
+
+/* Screenshots / illustrations embedded in slides. */
+.slidev-layout img.shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  object-position: top center;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 162, 74, 0.3);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+  background: #0b1024;
+}
+
+.caption {
+  color: #9aa3c2;
+  font-size: 0.78rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
 /* The "Go to slide" dialog renders its autocomplete list open by default,
    which overflows on-screen as a stray table of contents. Keep that dropdown
    hidden unless the dialog is actually focused (i.e. the user pressed "g"). */
