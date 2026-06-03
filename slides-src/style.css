@@ -184,3 +184,13 @@
 .slidev-layout.center {
   background-color: #0a1024;
 }
+
+/* The "Go to slide" dialog renders its autocomplete list open by default,
+   which overflows on-screen as a stray table of contents. Keep that dropdown
+   hidden unless the dialog is actually focused (i.e. the user pressed "g"). */
+#slidev-goto-dialog .autocomplete-list {
+  display: none;
+}
+#slidev-goto-dialog:focus-within .autocomplete-list {
+  display: block;
+}
