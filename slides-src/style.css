@@ -1,0 +1,186 @@
+/* Luxury blue + gold theme for the Building Scalable Data Pipelines deck.
+   Loaded globally by Slidev (project-root style.css). */
+
+:root {
+  --slidev-theme-primary: #c9a24a;
+}
+
+.slidev-layout {
+  background-color: #0a1024;
+  background-image:
+    radial-gradient(65% 60% at 50% -10%, rgba(46, 72, 164, 0.55), transparent 60%),
+    radial-gradient(45% 45% at 100% 110%, rgba(201, 162, 74, 0.14), transparent 60%);
+  color: #e9e4d6;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3,
+.slidev-layout h4 {
+  font-family: "Playfair Display", Georgia, serif;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.slidev-layout h1 {
+  font-size: 3.1rem;
+  line-height: 1.08;
+  background: linear-gradient(95deg, #ffffff 8%, #f0d99a 50%, #c9a24a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.slidev-layout h2 {
+  font-size: 2.1rem;
+  margin-bottom: 0.4em;
+}
+
+.slidev-layout h2::after {
+  content: "";
+  display: block;
+  width: 68px;
+  height: 3px;
+  margin-top: 12px;
+  background: linear-gradient(90deg, #c9a24a, rgba(201, 162, 74, 0));
+  border-radius: 2px;
+}
+
+.slidev-layout h4 {
+  color: #f0d99a;
+  font-weight: 600;
+}
+
+.slidev-layout a {
+  color: #f0d99a;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(240, 217, 154, 0.35);
+}
+
+.slidev-layout strong {
+  color: #ffffff;
+}
+
+.slidev-layout em {
+  color: #f0d99a;
+  font-style: normal;
+}
+
+.slidev-layout li {
+  margin: 0.28em 0;
+}
+
+.slidev-layout li::marker {
+  color: #c9a24a;
+}
+
+.slidev-layout table {
+  font-size: 0.86rem;
+  width: 100%;
+  table-layout: auto;
+}
+
+.slidev-layout th {
+  color: #f0d99a;
+  border-bottom: 1px solid #46507a !important;
+  text-align: left;
+}
+
+.slidev-layout td {
+  border-bottom: 1px solid rgba(70, 80, 122, 0.4);
+}
+
+.slidev-layout th,
+.slidev-layout td {
+  overflow-wrap: anywhere;
+}
+
+/* Prevent CSS grid/flex blowout: let columns shrink and keep code boxed in. */
+.slidev-layout .grid > * {
+  min-width: 0;
+}
+
+/* Safety net: top-level slide content can never exceed the canvas width. */
+.slidev-layout > * {
+  max-width: 100%;
+}
+
+.slidev-layout pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.slidev-layout .slidev-code {
+  max-width: 100%;
+}
+
+.slidev-layout blockquote {
+  border-left: 3px solid #c9a24a;
+  background: rgba(201, 162, 74, 0.08);
+  padding: 0.6em 1em;
+  color: #d9d2c2;
+  border-radius: 0 8px 8px 0;
+}
+
+.slidev-layout pre,
+.slidev-layout .slidev-code {
+  border: 1px solid rgba(201, 162, 74, 0.22) !important;
+  border-radius: 10px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+}
+
+.eyebrow {
+  color: #c9a24a;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.5em;
+}
+
+.chip {
+  display: inline-block;
+  padding: 5px 15px;
+  margin: 5px 7px 0 0;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 162, 74, 0.4);
+  background: rgba(201, 162, 74, 0.06);
+  color: #e9e4d6;
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.card {
+  border: 1px solid rgba(201, 162, 74, 0.22);
+  background: rgba(20, 28, 60, 0.55);
+  border-radius: 14px;
+  padding: 16px 20px;
+  min-width: 0;
+}
+
+.card pre {
+  max-width: 100%;
+}
+
+.card pre code {
+  font-size: 0.74em;
+  line-height: 1.4;
+}
+
+.muted {
+  color: #9aa3c2;
+}
+
+.gold {
+  color: #f0d99a;
+}
+
+/* Cover / section / end layouts share the same backdrop. */
+.slidev-layout.cover,
+.slidev-layout.section,
+.slidev-layout.end,
+.slidev-layout.center {
+  background-color: #0a1024;
+}
