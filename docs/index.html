@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Building Scalable Data Pipelines · Web Scraping & API</title>
-  <meta name="description" content="Materi hands-on Data Engineering: membangun data pipeline dengan Web Scraping (BeautifulSoup + Selenium + XPath) & API Integration. Step-by-step, pakai uv." />
+  <meta name="description" content="Hands-on Data Engineering material: building a data pipeline with Web Scraping (BeautifulSoup + Selenium + XPath) & API Integration. Step-by-step, using uv." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -130,9 +130,9 @@
     <div class="container">
       <div class="badge-pill">📊 Hands-on Data Engineering</div>
       <h1>Building Scalable Data Pipelines</h1>
-      <p class="sub">Web Scraping (BeautifulSoup + Selenium + XPath) &amp; API Integration untuk E-Commerce. Materi hands-on <strong>step-by-step</strong>, dikelola dengan <strong>uv</strong>, siap dipakai untuk live coding.</p>
+      <p class="sub">Web Scraping (BeautifulSoup + Selenium + XPath) &amp; API Integration for E-Commerce. Hands-on <strong>step-by-step</strong> material, managed with <strong>uv</strong>, ready for live coding.</p>
       <div class="cta">
-        <a class="btn btn-primary" href="https://github.com/thosangs/dibimbing_scraping">⭐ Lihat di GitHub</a>
+        <a class="btn btn-primary" href="https://github.com/thosangs/dibimbing_scraping">⭐ View on GitHub</a>
         <a class="btn btn-ghost" href="https://github.com/thosangs/dibimbing_scraping/blob/main/notebooks/walkthrough.ipynb">📓 Notebook Walkthrough</a>
         <a class="btn btn-ghost" href="#quickstart">🚀 Quickstart</a>
       </div>
@@ -141,114 +141,114 @@
 
   <main class="container">
     <section id="flow">
-      <h2 class="section-title">Alur Pipeline</h2>
-      <p class="section-sub">Dari satu item mentah sampai tersimpan rapi di database — alur yang sama yang dipakai di proyek data engineering nyata.</p>
+      <h2 class="section-title">Pipeline Flow</h2>
+      <p class="section-sub">From a single raw item to neatly stored in a database — the same flow used in real data engineering projects.</p>
       <div class="flow">
         <div class="node"><span class="num">1</span>Scrape 1 item</div>
-        <div class="node"><span class="num">2</span>Scrape 1 halaman</div>
+        <div class="node"><span class="num">2</span>Scrape 1 page</div>
         <div class="node"><span class="num">3</span>Dictionary List</div>
-        <div class="node"><span class="num">4</span>Beberapa Halaman</div>
-        <div class="node"><span class="num">5</span>Cleaning Data</div>
-        <div class="node"><span class="num">6</span>Koneksi DB</div>
-        <div class="node"><span class="num">7</span>Tabel &amp; Insert</div>
+        <div class="node"><span class="num">4</span>Multiple Pages</div>
+        <div class="node"><span class="num">5</span>Clean Data</div>
+        <div class="node"><span class="num">6</span>DB Connection</div>
+        <div class="node"><span class="num">7</span>Table &amp; Insert</div>
       </div>
     </section>
 
     <section id="features">
-      <h2 class="section-title">Kenapa Setup Ini?</h2>
-      <p class="section-sub">Dirancang biar gampang diajarkan & dijalankan.</p>
+      <h2 class="section-title">Why This Setup?</h2>
+      <p class="section-sub">Designed to be easy to teach & run.</p>
       <div class="feature-row">
         <div class="feature">
           <div class="ico">📦</div>
-          <h4>uv, bukan pip+venv</h4>
-          <p>Satu perintah <code>uv sync</code> langsung menyiapkan Python 3.12 + semua library.</p>
+          <h4>uv, not pip+venv</h4>
+          <p>A single <code>uv sync</code> command instantly provisions Python 3.12 + all libraries.</p>
         </div>
         <div class="feature">
           <div class="ico">🤖</div>
-          <h4>Driver Otomatis</h4>
-          <p>Selenium Manager auto-download ChromeDriver. Tidak ada install driver manual.</p>
+          <h4>Automatic Driver</h4>
+          <p>Selenium Manager auto-downloads ChromeDriver. No manual driver installation.</p>
         </div>
         <div class="feature">
           <div class="ico">🖥️</div>
-          <h4>Browser Terlihat</h4>
-          <p>Otomasi Selenium tampil di layar saat demo — bisa juga mode headless.</p>
+          <h4>Visible Browser</h4>
+          <p>Selenium automation shows on screen during a demo — headless mode is available too.</p>
         </div>
         <div class="feature">
           <div class="ico">🪜</div>
-          <h4>Satu file per langkah</h4>
-          <p>Tiap konsep berdiri sendiri — pas untuk live coding di kelas.</p>
+          <h4>One file per step</h4>
+          <p>Each concept stands on its own — perfect for live coding in class.</p>
         </div>
       </div>
     </section>
 
     <section id="steps">
-      <h2 class="section-title">Materi Step-by-Step</h2>
-      <p class="section-sub">9 langkah berurutan mengikuti slide kelas, plus pipeline lengkap.</p>
+      <h2 class="section-title">Step-by-Step Material</h2>
+      <p class="section-sub">9 sequential steps following the class slides, plus the full pipeline.</p>
       <div class="grid">
-        <div class="card"><div class="step-no">Langkah 1</div><h3>Data Pipeline</h3><p>Memahami alur otomatis memindahkan data dari sumber ke tujuan.</p><code>uv run python steps/01_pipeline_overview.py</code></div>
-        <div class="card"><div class="step-no">Langkah 2</div><h3>BeautifulSoup · 1 item</h3><p>Parsing HTML statis & mengambil satu elemen dengan find().</p><code>uv run python steps/02_bs4_satu_item.py</code></div>
-        <div class="card"><div class="step-no">Langkah 3</div><h3>1 Halaman → Dict List</h3><p>find_all() untuk banyak produk dalam satu halaman.</p><code>uv run python steps/03_bs4_satu_halaman.py</code></div>
-        <div class="card"><div class="step-no">Langkah 4</div><h3>Beberapa Halaman</h3><p>Pagination untuk scrape banyak halaman sekaligus.</p><code>uv run python steps/04_bs4_banyak_halaman.py</code></div>
-        <div class="card"><div class="step-no">Langkah 5</div><h3>Selenium · Dinamis</h3><p>Scrape konten yang di-render JavaScript (headless).</p><code>uv run python steps/05_selenium_dinamis.py</code></div>
-        <div class="card"><div class="step-no">Langkah 6</div><h3>XPath</h3><p>Menavigasi & memilih elemen DOM dengan XPath di Selenium.</p><code>uv run python steps/06_selenium_xpath.py</code></div>
-        <div class="card"><div class="step-no">Langkah 7</div><h3>API Integration</h3><p>Mengambil data terstruktur (JSON) dari API e-commerce.</p><code>uv run python steps/07_api.py</code></div>
-        <div class="card"><div class="step-no">Langkah 8</div><h3>Cleaning Data</h3><p>Membersihkan & mengubah format data dengan pandas.</p><code>uv run python steps/08_cleaning.py</code></div>
-        <div class="card"><div class="step-no">Langkah 9</div><h3>Simpan ke Database</h3><p>Koneksi, buat tabel, insert — SQLite (default) / PostgreSQL.</p><code>uv run python steps/09_simpan_database.py</code></div>
+        <div class="card"><div class="step-no">Step 1</div><h3>Data Pipeline</h3><p>Understand the flow of automatically moving data from source to destination.</p><code>uv run python steps/01_pipeline_overview.py</code></div>
+        <div class="card"><div class="step-no">Step 2</div><h3>BeautifulSoup · 1 item</h3><p>Parse static HTML & grab a single element with find().</p><code>uv run python steps/02_bs4_satu_item.py</code></div>
+        <div class="card"><div class="step-no">Step 3</div><h3>1 Page → Dict List</h3><p>find_all() for many products on a single page.</p><code>uv run python steps/03_bs4_satu_halaman.py</code></div>
+        <div class="card"><div class="step-no">Step 4</div><h3>Multiple Pages</h3><p>Pagination to scrape many pages at once.</p><code>uv run python steps/04_bs4_banyak_halaman.py</code></div>
+        <div class="card"><div class="step-no">Step 5</div><h3>Selenium · Dynamic</h3><p>Scrape content rendered by JavaScript (headless).</p><code>uv run python steps/05_selenium_dinamis.py</code></div>
+        <div class="card"><div class="step-no">Step 6</div><h3>XPath</h3><p>Navigate & select DOM elements with XPath in Selenium.</p><code>uv run python steps/06_selenium_xpath.py</code></div>
+        <div class="card"><div class="step-no">Step 7</div><h3>API Integration</h3><p>Fetch structured data (JSON) from an e-commerce API.</p><code>uv run python steps/07_api.py</code></div>
+        <div class="card"><div class="step-no">Step 8</div><h3>Cleaning Data</h3><p>Clean & reformat data with pandas.</p><code>uv run python steps/08_cleaning.py</code></div>
+        <div class="card"><div class="step-no">Step 9</div><h3>Save to Database</h3><p>Connect, create a table, insert — SQLite (default) / PostgreSQL.</p><code>uv run python steps/09_simpan_database.py</code></div>
       </div>
     </section>
 
     <section id="notebooks">
       <h2 class="section-title">Notebooks</h2>
-      <p class="section-sub">Materi interaktif untuk live coding — sudah teruji jalan top-to-bottom.</p>
+      <p class="section-sub">Interactive material for live coding — tested to run top-to-bottom.</p>
       <div class="grid">
         <a class="card" href="https://github.com/thosangs/dibimbing_scraping/blob/main/notebooks/walkthrough.ipynb">
-          <div class="step-no">Walkthrough</div><h3>Pipeline End-to-End</h3>
-          <p>Semua langkah (BS4, Selenium, XPath, API, cleaning, simpan DB) dalam satu alur.</p>
+          <div class="step-no">Walkthrough</div><h3>End-to-End Pipeline</h3>
+          <p>All steps (BS4, Selenium, XPath, API, cleaning, saving to DB) in one flow.</p>
         </a>
         <a class="card" href="https://github.com/thosangs/dibimbing_scraping/blob/main/notebooks/beautifulsoup_vs_xpath.ipynb">
-          <div class="step-no">Inti</div><h3>BeautifulSoup vs XPath</h3>
-          <p>Cara memilih elemen (tag, class, id, aria, href, teks, navigasi) dari mudah ke kompleks.</p>
+          <div class="step-no">Core</div><h3>BeautifulSoup vs XPath</h3>
+          <p>How to select elements (tag, class, id, aria, href, text, navigation) from easy to complex.</p>
         </a>
         <a class="card" href="https://github.com/thosangs/dibimbing_scraping/tree/main/notebooks/cases">
-          <div class="step-no">Hard Cases</div><h3>Kasus Susah</h3>
-          <p>Pagination kompleks, infinite scroll, WebDriverWait, dan tabel HTML (read_html).</p>
+          <div class="step-no">Hard Cases</div><h3>Hard Cases</h3>
+          <p>Complex pagination, infinite scroll, WebDriverWait, and HTML tables (read_html).</p>
         </a>
         <a class="card" href="https://github.com/thosangs/dibimbing_scraping/blob/main/notebooks/misc/newspaper3k.ipynb">
-          <div class="step-no">Misc</div><h3>Parsing Berita</h3>
-          <p>Ekstraksi artikel otomatis & multi-source dengan newspaper4k.</p>
+          <div class="step-no">Misc</div><h3>News Parsing</h3>
+          <p>Automatic, multi-source article extraction with newspaper4k.</p>
         </a>
         <a class="card" href="https://github.com/thosangs/dibimbing_scraping/blob/main/notebooks/misc/ecommerce_scraping.ipynb">
           <div class="step-no">Misc</div><h3>E-Commerce Toolkit</h3>
-          <p>extruct (JSON-LD), price-parser, robots.txt, dan Scrapy (async — bandingkan waktu).</p>
+          <p>extruct (JSON-LD), price-parser, robots.txt, and Scrapy (async — compare timing).</p>
         </a>
         <a class="card" href="https://github.com/thosangs/dibimbing_scraping/blob/main/notebooks/misc/scrapy_real_case.ipynb">
           <div class="step-no">Security</div><h3>Anti-Bot: Red vs Blue</h3>
-          <p>Bedah cara scraper menembus proteksi e-commerce nyata (UA → TLS/JA3 → cookie) lalu cara mencegahnya. Untuk edukasi keamanan.</p>
+          <p>Dissect how scrapers break through real e-commerce protection (UA → TLS/JA3 → cookie) and then how to prevent it. For security education.</p>
         </a>
       </div>
     </section>
 
     <section id="quickstart">
       <h2 class="section-title">Quickstart</h2>
-      <p class="section-sub">Dari nol sampai pipeline jalan dalam hitungan menit.</p>
-      <pre class="codeblock"><span class="c"># 1. Install uv (kalau belum ada)</span>
+      <p class="section-sub">From zero to a running pipeline in a matter of minutes.</p>
+      <pre class="codeblock"><span class="c"># 1. Install uv (if you don't have it yet)</span>
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-<span class="c"># 2. Clone & masuk folder</span>
+<span class="c"># 2. Clone & enter the folder</span>
 git clone https://github.com/thosangs/dibimbing_scraping.git
 cd dibimbing_scraping
 
-<span class="c"># 3. Install semua dependency</span>
+<span class="c"># 3. Install all dependencies</span>
 uv sync
 
-<span class="c"># 4. Jalankan pipeline lengkap</span>
-uv run python pipeline.py --halaman 5
-<span class="g">→ data/produk.csv & data/ecommerce.db</span></pre>
+<span class="c"># 4. Run the full pipeline</span>
+uv run python pipeline.py --pages 5
+<span class="g">→ data/products.csv & data/ecommerce.db</span></pre>
     </section>
 
     <section id="tools">
       <h2 class="section-title">Tools</h2>
-      <p class="section-sub">Stack yang dipakai sepanjang materi.</p>
+      <p class="section-sub">The stack used throughout the material.</p>
       <div class="tools">
         <span class="tool">🐍 Python 3.12</span>
         <span class="tool">📦 uv</span>

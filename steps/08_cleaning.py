@@ -1,18 +1,17 @@
 """
-Langkah 8 - Cleaning Data
-=========================
+Step 8 - Cleaning Data
+======================
 
-Tujuan: Membersihkan data sebelum disimpan ke database.
+Goal: Clean the data before saving it to the database.
 
-Aktivitas:
-  1. Menghapus data kosong / duplikat
-  2. Mengubah format data (contoh: harga "£51.77" -> 51.77 bertipe float)
-  3. Menghapus karakter yang tidak diperlukan
+Activities:
+  1. Remove empty / duplicate records
+  2. Reformat data (e.g. price "£51.77" -> 51.77 as a float)
+  3. Remove unnecessary characters
 
-Di sini kita scrape data mentah dari books.toscrape, lalu bersihkan
-menggunakan pandas.
+Here we scrape raw data from books.toscrape, then clean it using pandas.
 
-Jalankan:
+Run:
     uv run python steps/08_cleaning.py
 """
 
@@ -24,58 +23,58 @@ from bs4 import BeautifulSoup
 
 BASE_URL = "https://books.toscrape.com/catalogue/page-{}.html"
 
-# Konversi rating teks (Three) -> angka (3)
+# Convert the text rating (Three) -> a number (3)
 RATING_MAP = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
 
-def scrape_banyak_halaman(jumlah_halaman: int = 2) -> list[dict]:
-    semua: list[dict] = []
-    for halaman in range(1, jumlah_halaman + 1):
-        resp = requests.get(BASE_URL.format(halaman), timeout=10)
+def scrape_multiple_pages(page_count: int = 2) -> list[dict]:
+    all_products: list[dict] = []
+    for page in range(1, page_count + 1):
+        resp = requests.get(BASE_URL.format(page), timeout=10)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
         for item in soup.find_all("article", class_="product_pod"):
-            semua.append(
+            all_products.append(
                 {
-                    "nama": item.find("h3").find("a")["title"],
-                    "harga": item.find("p", class_="price_color").text,
+                    "name": item.find("h3").find("a")["title"],
+                    "price": item.find("p", class_="price_color").text,
                     "rating": item.find("p", class_="star-rating")["class"][1],
                 }
             )
-    return semua
+    return all_products
 
 
-def bersihkan(data: list[dict]) -> pd.DataFrame:
-    # 1) Masukkan ke DataFrame
+def clean(data: list[dict]) -> pd.DataFrame:
+    # 1) Load into a DataFrame
     df = pd.DataFrame(data)
 
-    # 2) Bersihkan kolom harga: "£51.77" -> 51.77 (float)
-    #    Hapus semua karakter selain angka dan titik
-    df["harga"] = (
-        df["harga"]
+    # 2) Clean the price column: "£51.77" -> 51.77 (float)
+    #    Remove every character except digits and the dot
+    df["price"] = (
+        df["price"]
         .apply(lambda x: re.sub(r"[^0-9.]", "", x))
         .astype(float)
     )
 
-    # 3) Ubah rating teks menjadi angka
+    # 3) Convert the text rating into a number
     df["rating"] = df["rating"].map(RATING_MAP)
 
-    # 4) Hapus baris yang ada nilai kosong & data duplikat
+    # 4) Drop rows with empty values & duplicate records
     df = df.dropna().drop_duplicates().reset_index(drop=True)
 
     return df
 
 
 def main() -> None:
-    mentah = scrape_banyak_halaman(jumlah_halaman=2)
-    print("=== Data MENTAH (3 contoh) ===")
-    for d in mentah[:3]:
+    raw_data = scrape_multiple_pages(page_count=2)
+    print("=== RAW data (3 examples) ===")
+    for d in raw_data[:3]:
         print(d)
 
-    df = bersihkan(mentah)
-    print("\n=== Data SETELAH cleaning ===")
+    df = clean(raw_data)
+    print("\n=== Data AFTER cleaning ===")
     print(df.head())
-    print("\nTipe data tiap kolom:")
+    print("\nData type of each column:")
     print(df.dtypes)
 
 

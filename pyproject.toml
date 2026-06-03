@@ -12,40 +12,40 @@ dependencies = [
     "pandas>=2.2",
 ]
 
-# Dependency opsional untuk PostgreSQL (Langkah 8 versi Postgres).
-# Install dengan:  uv sync --extra postgres
+# Optional dependency for PostgreSQL (Step 8, Postgres version).
+# Install with:  uv sync --extra postgres
 [project.optional-dependencies]
 postgres = [
     "psycopg2-binary>=2.9",
 ]
-# Untuk menjalankan notebook walkthrough:  uv sync --extra notebook
+# To run the walkthrough notebook:  uv sync --extra notebook
 notebook = [
     "jupyterlab>=4.2",
     "ipykernel>=6.29",
 ]
-# Untuk notebook parsing artikel berita (notebooks/misc):  uv sync --extra news
+# For the news article parsing notebook (notebooks/misc):  uv sync --extra news
 news = [
     "newspaper4k>=0.9.3",
 ]
-# Tambahan fitur NLP (keyword & ringkasan) untuk newspaper:  uv sync --extra news-nlp
+# Additional NLP features (keywords & summaries) for newspaper:  uv sync --extra news-nlp
 news-nlp = [
     "newspaper4k>=0.9.3",
     "nltk>=3.8",
 ]
-# Untuk notebook e-commerce (extruct + price-parser + Scrapy):  uv sync --extra ecommerce
+# For the e-commerce notebook (extruct + price-parser + Scrapy):  uv sync --extra ecommerce
 ecommerce = [
     "extruct>=0.16",
     "price-parser>=0.3.4",
     "scrapy>=2.11",
 ]
-# Pola page object (opsional, butuh setup project Scrapy):  uv sync --extra ecommerce-advanced
+# Page object pattern (optional, requires a Scrapy project setup):  uv sync --extra ecommerce-advanced
 ecommerce-advanced = [
     "scrapy>=2.11",
     "scrapy-poet>=0.24",
     "zyte-common-items>=0.26",
 ]
-# Lab keamanan anti-bot (notebooks/misc/scrapy_real_case): TLS impersonation, dll.
-# Untuk EDUKASI keamanan (red/blue team).  uv sync --extra security
+# Anti-bot security lab (notebooks/misc/scrapy_real_case): TLS impersonation, etc.
+# For security EDUCATION (red/blue team).  uv sync --extra security
 security = [
     "scrapy>=2.11",
     "price-parser>=0.3.4",
@@ -54,4 +54,4 @@ security = [
 ]
 
 [tool.uv]
-# Tidak ada konfigurasi khusus; default uv sudah cukup untuk kelas.
+# No special configuration; the uv defaults are enough for the class.

@@ -1,17 +1,17 @@
 """
-Langkah 2 - Scraping Data dengan BeautifulSoup (Scrape 1 Item)
-=============================================================
+Step 2 - Scraping Data with BeautifulSoup (Scrape 1 Item)
+=========================================================
 
-Tujuan: Mengambil data dari website STATIS menggunakan BeautifulSoup.
+Goal: Extract data from a STATIC website using BeautifulSoup.
 
-BeautifulSoup adalah library Python untuk parsing HTML/XML, sehingga kita
-dapat mengambil data berdasarkan tag atau atribut tertentu.
+BeautifulSoup is a Python library for parsing HTML/XML, so we can extract
+data based on specific tags or attributes.
 
-Metode penting:
-  - find()      -> mengambil SATU elemen
-  - find_all()  -> mengambil BEBERAPA elemen (lihat Langkah 3)
+Key methods:
+  - find()      -> get ONE element
+  - find_all()  -> get SEVERAL elements (see Step 3)
 
-Jalankan:
+Run:
     uv run python steps/02_bs4_satu_item.py
 """
 
@@ -22,33 +22,33 @@ URL = "https://books.toscrape.com/"
 
 
 def main() -> None:
-    # 1) Ambil HTML halaman menggunakan requests
+    # 1) Fetch the page HTML using requests
     response = requests.get(URL, timeout=10)
-    response.raise_for_status()  # error kalau status bukan 200
-    response.encoding = "utf-8"  # pastikan simbol mata uang (£) tampil benar
+    response.raise_for_status()  # raises an error if the status is not 200
+    response.encoding = "utf-8"  # make sure the currency symbol (£) displays correctly
 
-    # 2) Parsing HTML dengan BeautifulSoup
+    # 2) Parse the HTML with BeautifulSoup
     soup = BeautifulSoup(response.text, "html.parser")
 
-    # 3) Ambil SATU item (produk/buku) pertama dengan find()
-    #    Di books.toscrape, setiap buku ada di <article class="product_pod">
+    # 3) Get the FIRST single item (product/book) with find()
+    #    On books.toscrape, each book lives in <article class="product_pod">
     item = soup.find("article", class_="product_pod")
 
-    # 4) Ambil atribut dari item tersebut
-    #    - judul ada di atribut "title" pada tag <a> di dalam <h3>
-    judul = item.find("h3").find("a")["title"]
-    #    - harga ada di <p class="price_color">
-    harga = item.find("p", class_="price_color").text
-    #    - rating ada di class tag <p>, contoh: "star-rating Three"
+    # 4) Extract attributes from that item
+    #    - the title is in the "title" attribute of the <a> tag inside <h3>
+    title = item.find("h3").find("a")["title"]
+    #    - the price is in <p class="price_color">
+    price = item.find("p", class_="price_color").text
+    #    - the rating is in the class of the <p> tag, e.g. "star-rating Three"
     rating = item.find("p", class_="star-rating")["class"][1]
-    #    - ketersediaan ada di <p class="instock availability">
-    stok = item.find("p", class_="instock availability").text.strip()
+    #    - availability is in <p class="instock availability">
+    stock = item.find("p", class_="instock availability").text.strip()
 
     print("=== Scrape 1 Item ===")
-    print("Judul   :", judul)
-    print("Harga   :", harga)
+    print("Title   :", title)
+    print("Price   :", price)
     print("Rating  :", rating)
-    print("Stok    :", stok)
+    print("Stock   :", stock)
 
 
 if __name__ == "__main__":

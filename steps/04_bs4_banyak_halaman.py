@@ -1,18 +1,18 @@
 """
-Langkah 4 - Scrape Beberapa Halaman (Pagination)
-================================================
+Step 4 - Scrape Several Pages (Pagination)
+==========================================
 
-Tujuan: Mengambil data dari BANYAK halaman menggunakan pola pagination.
+Goal: Extract data from MANY pages using a pagination pattern.
 
-Di books.toscrape, halaman ke-N ada di:
+On books.toscrape, page N is located at:
     https://books.toscrape.com/catalogue/page-{N}.html
 
-Strategi:
-  - Looping nomor halaman 1..N
-  - Untuk tiap halaman, scrape semua produk (pakai fungsi dari Langkah 3)
-  - Gabungkan semua hasil ke dalam satu dictionary list besar
+Strategy:
+  - Loop over page numbers 1..N
+  - For each page, scrape all products (using the function from Step 3)
+  - Combine all results into one big dictionary list
 
-Jalankan:
+Run:
     uv run python steps/04_bs4_banyak_halaman.py
 """
 
@@ -22,40 +22,40 @@ from bs4 import BeautifulSoup
 BASE_URL = "https://books.toscrape.com/catalogue/page-{}.html"
 
 
-def scrape_halaman(url: str) -> list[dict]:
+def scrape_page(url: str) -> list[dict]:
     response = requests.get(url, timeout=10)
     response.raise_for_status()
-    response.encoding = "utf-8"  # pastikan simbol mata uang (£) tampil benar
+    response.encoding = "utf-8"  # make sure the currency symbol (£) displays correctly
     soup = BeautifulSoup(response.text, "html.parser")
 
-    produk: list[dict] = []
+    products: list[dict] = []
     for item in soup.find_all("article", class_="product_pod"):
-        produk.append(
+        products.append(
             {
-                "nama": item.find("h3").find("a")["title"],
-                "harga": item.find("p", class_="price_color").text,
+                "name": item.find("h3").find("a")["title"],
+                "price": item.find("p", class_="price_color").text,
                 "rating": item.find("p", class_="star-rating")["class"][1],
                 "link": item.find("h3").find("a")["href"],
             }
         )
-    return produk
+    return products
 
 
-def scrape_banyak_halaman(jumlah_halaman: int = 3) -> list[dict]:
-    semua_produk: list[dict] = []
-    for halaman in range(1, jumlah_halaman + 1):
-        url = BASE_URL.format(halaman)
-        print(f"-> Scraping halaman {halaman}: {url}")
-        produk = scrape_halaman(url)
-        semua_produk.extend(produk)
-    return semua_produk
+def scrape_multiple_pages(page_count: int = 3) -> list[dict]:
+    all_products: list[dict] = []
+    for page in range(1, page_count + 1):
+        url = BASE_URL.format(page)
+        print(f"-> Scraping page {page}: {url}")
+        products = scrape_page(url)
+        all_products.extend(products)
+    return all_products
 
 
 def main() -> None:
-    data = scrape_banyak_halaman(jumlah_halaman=3)
-    print(f"=== Total {len(data)} produk dari beberapa halaman ===")
-    print("Contoh data pertama:", data[0])
-    print("Contoh data terakhir:", data[-1])
+    data = scrape_multiple_pages(page_count=3)
+    print(f"=== Total {len(data)} products from several pages ===")
+    print("First example record:", data[0])
+    print("Last example record:", data[-1])
 
 
 if __name__ == "__main__":

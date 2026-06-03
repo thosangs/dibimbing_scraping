@@ -1,24 +1,24 @@
 """
-Langkah 6 - Menggunakan XPath untuk Mengambil Elemen
-====================================================
+Step 6 - Using XPath to Select Elements
+=======================================
 
-Tujuan: Memahami cara memilih elemen HTML menggunakan XPath di Selenium.
+Goal: Understand how to select HTML elements using XPath in Selenium.
 
-XPath (XML Path Language) adalah bahasa query untuk menavigasi dan memilih
-node/elemen di dalam dokumen HTML/XML (DOM).
+XPath (XML Path Language) is a query language for navigating and selecting
+nodes/elements within an HTML/XML document (the DOM).
 
-Contoh XPath (bisa dicoba di https://scrapinghub.github.io/xpath-playground/):
-    //h1                              -> semua tag <h1>
-    //p                               -> semua tag <p>
-    //p[1]                            -> tag <p> pertama
-    //*[@id="first-name"]             -> elemen apa pun dengan id="first-name"
-    //p[@class="plot"]                -> <p> dengan class="plot" (persis)
-    //p[contains(@class,"plot")]      -> <p> yang class-nya MENGANDUNG "plot"
+XPath examples (try them at https://scrapinghub.github.io/xpath-playground/):
+    //h1                              -> all <h1> tags
+    //p                               -> all <p> tags
+    //p[1]                            -> the first <p> tag
+    //*[@id="first-name"]             -> any element with id="first-name"
+    //p[@class="plot"]                -> <p> with class="plot" (exact match)
+    //p[contains(@class,"plot")]      -> <p> whose class CONTAINS "plot"
 
-Di sini kita pakai XPath untuk mengambil quote dari website dinamis,
-sebagai alternatif dari By.CLASS_NAME pada Langkah 5.
+Here we use XPath to extract quotes from a dynamic website, as an
+alternative to By.CLASS_NAME from Step 5.
 
-Jalankan:
+Run:
     uv run python steps/06_selenium_xpath.py
 """
 
@@ -29,34 +29,34 @@ from selenium.webdriver.common.by import By
 URL = "https://quotes.toscrape.com/js/"
 
 
-def buat_driver(headless: bool = False) -> webdriver.Chrome:
+def build_driver(headless: bool = False) -> webdriver.Chrome:
     options = Options()
     if headless:
-        # mode tanpa jendela browser (opsional)
+        # run without a browser window (optional)
         options.add_argument("--headless=new")
     options.add_argument("--window-size=1920,1080")
-    # Selenium Manager otomatis menyiapkan driver yang cocok
+    # Selenium Manager automatically sets up a matching driver
     return webdriver.Chrome(options=options)
 
 
 def main() -> None:
-    driver = buat_driver()
+    driver = build_driver()
     try:
         driver.get(URL)
 
-        # XPath: ambil semua <div class="quote">
+        # XPath: get all <div class="quote">
         quotes = driver.find_elements(By.XPATH, '//div[@class="quote"]')
-        print(f"=== Ambil {len(quotes)} quote menggunakan XPath ===")
+        print(f"=== Fetched {len(quotes)} quotes using XPath ===")
 
         for q in quotes[:5]:
-            # XPath relatif (diawali ".") -> dicari DI DALAM elemen quote ini
-            teks = q.find_element(By.XPATH, './/span[@class="text"]').text
-            penulis = q.find_element(By.XPATH, './/small[@class="author"]').text
-            print(f"- {teks}  -- {penulis}")
+            # Relative XPath (starts with ".") -> searched WITHIN this quote element
+            text = q.find_element(By.XPATH, './/span[@class="text"]').text
+            author = q.find_element(By.XPATH, './/small[@class="author"]').text
+            print(f"- {text}  -- {author}")
 
-        # Contoh XPath lain: ambil judul halaman <h1> langsung
-        judul = driver.find_element(By.XPATH, "//h1").text
-        print("\nJudul halaman (//h1):", judul)
+        # Another XPath example: get the page title <h1> directly
+        title = driver.find_element(By.XPATH, "//h1").text
+        print("\nPage title (//h1):", title)
     finally:
         driver.quit()
 

@@ -1,21 +1,21 @@
 """
-Langkah 9 - Menyimpan Data ke Database
-======================================
+Step 9 - Saving Data to a Database
+==================================
 
-Tujuan: Menyimpan hasil pipeline ke database.
+Goal: Save the pipeline results to a database.
 
-Aktivitas:
-  1. Membuat koneksi database
-  2. Membuat tabel
-  3. Memasukkan (insert) data
+Activities:
+  1. Open a database connection
+  2. Create a table
+  3. Insert the data
 
-Di kelas ini kita pakai DUA pilihan:
-  - SQLite   (DEFAULT) -> bawaan Python, TIDAK perlu install server apa pun.
-                          Cocok untuk latihan cepat.
-  - PostgreSQL (opsional) -> sesuai contoh di guideline. Aktifkan dengan
-                          install psycopg2:  uv sync --extra postgres
+In this class we use TWO options:
+  - SQLite   (DEFAULT) -> built into Python, NO server installation needed.
+                          Great for quick practice.
+  - PostgreSQL (optional) -> matches the example in the guideline. Enable it by
+                          installing psycopg2:  uv sync --extra postgres
 
-Jalankan (default SQLite):
+Run (SQLite by default):
     uv run python steps/09_simpan_database.py
 """
 
@@ -32,70 +32,70 @@ RATING_MAP = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 DB_PATH = Path(__file__).resolve().parent.parent / "data" / "ecommerce.db"
 
 
-def scrape_dan_bersihkan(jumlah_halaman: int = 2) -> list[dict]:
-    hasil: list[dict] = []
-    for halaman in range(1, jumlah_halaman + 1):
-        resp = requests.get(BASE_URL.format(halaman), timeout=10)
+def scrape_and_clean(page_count: int = 2) -> list[dict]:
+    results: list[dict] = []
+    for page in range(1, page_count + 1):
+        resp = requests.get(BASE_URL.format(page), timeout=10)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
         for item in soup.find_all("article", class_="product_pod"):
-            harga_teks = item.find("p", class_="price_color").text
-            hasil.append(
+            price_text = item.find("p", class_="price_color").text
+            results.append(
                 {
-                    "nama": item.find("h3").find("a")["title"],
-                    "harga": float(re.sub(r"[^0-9.]", "", harga_teks)),
+                    "name": item.find("h3").find("a")["title"],
+                    "price": float(re.sub(r"[^0-9.]", "", price_text)),
                     "rating": RATING_MAP.get(
                         item.find("p", class_="star-rating")["class"][1]
                     ),
                 }
             )
-    return hasil
+    return results
 
 
 # --------------------------------------------------------------------------
-# PILIHAN 1: SQLite (default, tanpa install server)
+# OPTION 1: SQLite (default, no server installation)
 # --------------------------------------------------------------------------
-def simpan_sqlite(data: list[dict]) -> None:
+def save_to_sqlite(data: list[dict]) -> None:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    # 1) Membuat koneksi database
+    # 1) Open a database connection
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    # 2) Membuat tabel
+    # 2) Create the table
     cur.execute(
         """
-        CREATE TABLE IF NOT EXISTS produk (
+        CREATE TABLE IF NOT EXISTS products (
             id     INTEGER PRIMARY KEY AUTOINCREMENT,
-            nama   TEXT NOT NULL,
-            harga  REAL,
+            name   TEXT NOT NULL,
+            price  REAL,
             rating INTEGER
         )
         """
     )
 
-    # 3) Memasukkan data
+    # 3) Insert the data
     cur.executemany(
-        "INSERT INTO produk (nama, harga, rating) VALUES (:nama, :harga, :rating)",
+        "INSERT INTO products (name, price, rating) VALUES (:name, :price, :rating)",
         data,
     )
 
     conn.commit()
-    print(f"[SQLite] {len(data)} baris tersimpan ke {DB_PATH}")
+    print(f"[SQLite] {len(data)} rows saved to {DB_PATH}")
 
-    # Cek hasil: ambil 5 baris pertama
-    for row in cur.execute("SELECT * FROM produk LIMIT 5"):
+    # Check the result: fetch the first 5 rows
+    for row in cur.execute("SELECT * FROM products LIMIT 5"):
         print(row)
 
     conn.close()
 
 
 # --------------------------------------------------------------------------
-# PILIHAN 2: PostgreSQL (opsional, sesuai contoh guideline)
-#   Aktifkan: uv sync --extra postgres
+# OPTION 2: PostgreSQL (optional, matches the guideline example)
+#   Enable: uv sync --extra postgres
 # --------------------------------------------------------------------------
 def get_connection_postgres():
-    import psycopg2  # diimport di dalam fungsi agar tidak wajib terpasang
+    import psycopg2  # imported inside the function so it is not required to be installed
 
     conn = psycopg2.connect(
         host="localhost",
@@ -107,38 +107,38 @@ def get_connection_postgres():
     return conn
 
 
-def simpan_postgres(data: list[dict]) -> None:
+def save_to_postgres(data: list[dict]) -> None:
     conn = get_connection_postgres()
     cur = conn.cursor()
 
     cur.execute(
         """
-        CREATE TABLE IF NOT EXISTS produk (
+        CREATE TABLE IF NOT EXISTS products (
             id     SERIAL PRIMARY KEY,
-            nama   TEXT NOT NULL,
-            harga  NUMERIC,
+            name   TEXT NOT NULL,
+            price  NUMERIC,
             rating INTEGER
         )
         """
     )
 
     cur.executemany(
-        "INSERT INTO produk (nama, harga, rating) VALUES (%(nama)s, %(harga)s, %(rating)s)",
+        "INSERT INTO products (name, price, rating) VALUES (%(name)s, %(price)s, %(rating)s)",
         data,
     )
 
     conn.commit()
-    print(f"[PostgreSQL] {len(data)} baris tersimpan ke test_db.produk")
+    print(f"[PostgreSQL] {len(data)} rows saved to test_db.products")
     cur.close()
     conn.close()
 
 
 def main() -> None:
-    data = scrape_dan_bersihkan(jumlah_halaman=2)
-    print(f"Berhasil siapkan {len(data)} baris data bersih.\n")
+    data = scrape_and_clean(page_count=2)
+    print(f"Successfully prepared {len(data)} rows of clean data.\n")
 
-    # Default pakai SQLite. Untuk Postgres, ganti ke simpan_postgres(data)
-    simpan_sqlite(data)
+    # Uses SQLite by default. For Postgres, switch to save_to_postgres(data)
+    save_to_sqlite(data)
 
 
 if __name__ == "__main__":

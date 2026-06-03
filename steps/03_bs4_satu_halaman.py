@@ -1,16 +1,16 @@
 """
-Langkah 3 - Scrape Beberapa Item dalam Satu Halaman
-===================================================
+Step 3 - Scrape Several Items on a Single Page
+==============================================
 
-Tujuan: Mengambil BANYAK data dari satu halaman, lalu menyimpannya dalam
-bentuk DICTIONARY LIST (list berisi dictionary).
+Goal: Extract MANY records from a single page, then store them as a
+DICTIONARY LIST (a list of dictionaries).
 
-Aktivitas:
-  1. Mengambil semua elemen produk dengan find_all()
-  2. Mengambil atribut: nama, harga, rating, link
-  3. Menyimpan tiap produk sebagai dictionary, dikumpulkan ke dalam list
+Activities:
+  1. Get all product elements with find_all()
+  2. Extract attributes: name, price, rating, link
+  3. Store each product as a dictionary, collected into a list
 
-Jalankan:
+Run:
     uv run python steps/03_bs4_satu_halaman.py
 """
 
@@ -20,37 +20,37 @@ from bs4 import BeautifulSoup
 URL = "https://books.toscrape.com/"
 
 
-def scrape_halaman(url: str) -> list[dict]:
+def scrape_page(url: str) -> list[dict]:
     response = requests.get(url, timeout=10)
     response.raise_for_status()
-    response.encoding = "utf-8"  # pastikan simbol mata uang (£) tampil benar
+    response.encoding = "utf-8"  # make sure the currency symbol (£) displays correctly
     soup = BeautifulSoup(response.text, "html.parser")
 
-    produk: list[dict] = []
+    products: list[dict] = []
 
-    # find_all() -> ambil SEMUA buku di halaman ini
+    # find_all() -> get ALL books on this page
     for item in soup.find_all("article", class_="product_pod"):
-        nama = item.find("h3").find("a")["title"]
-        harga = item.find("p", class_="price_color").text
+        name = item.find("h3").find("a")["title"]
+        price = item.find("p", class_="price_color").text
         rating = item.find("p", class_="star-rating")["class"][1]
         link = item.find("h3").find("a")["href"]
 
-        produk.append(
+        products.append(
             {
-                "nama": nama,
-                "harga": harga,
+                "name": name,
+                "price": price,
                 "rating": rating,
                 "link": link,
             }
         )
 
-    return produk
+    return products
 
 
 def main() -> None:
-    data = scrape_halaman(URL)
-    print(f"=== Berhasil scrape {len(data)} produk dari 1 halaman ===")
-    for p in data[:5]:  # tampilkan 5 contoh pertama
+    data = scrape_page(URL)
+    print(f"=== Successfully scraped {len(data)} products from 1 page ===")
+    for p in data[:5]:  # show the first 5 examples
         print(p)
     print("...")
 

@@ -1,21 +1,21 @@
 """
-Langkah 7 - Mengambil Data dari API
-===================================
+Step 7 - Fetching Data from an API
+==================================
 
-Tujuan: Memahami cara mengambil data melalui API.
+Goal: Understand how to fetch data through an API.
 
-API (Application Programming Interface) adalah jalur RESMI untuk mengambil
-data secara terstruktur langsung dari sistem penyedia data.
+An API (Application Programming Interface) is the OFFICIAL way to fetch
+structured data directly from a data provider's system.
 
-Karakteristik API:
-  - Data biasanya berbentuk JSON / XML
-  - Stabil & terstruktur
-  - Lebih cepat dan reliabel dibanding scraping
-  - Biasanya ada rate limit & authentication
+API characteristics:
+  - Data is usually in JSON / XML form
+  - Stable & structured
+  - Faster and more reliable than scraping
+  - Often has rate limits & authentication
 
-Di sini kita pakai API e-commerce publik: https://dummyjson.com/products
+Here we use a public e-commerce API: https://dummyjson.com/products
 
-Jalankan:
+Run:
     uv run python steps/07_api.py
 """
 
@@ -24,22 +24,22 @@ import requests
 URL = "https://dummyjson.com/products"
 
 
-def ambil_data_api(limit: int = 10) -> list[dict]:
-    # Banyak API menerima query parameter, misal limit & select
+def fetch_api_data(limit: int = 10) -> list[dict]:
+    # Many APIs accept query parameters, e.g. limit & select
     params = {"limit": limit, "select": "title,price,category,brand"}
     response = requests.get(URL, params=params, timeout=10)
     response.raise_for_status()
 
-    # Ubah response menjadi dict Python
+    # Convert the response into a Python dict
     data = response.json()
-    # Struktur dummyjson: {"products": [...], "total": ..., ...}
+    # dummyjson structure: {"products": [...], "total": ..., ...}
     return data["products"]
 
 
 def main() -> None:
-    produk = ambil_data_api(limit=10)
-    print(f"=== Berhasil ambil {len(produk)} produk dari API ===")
-    for p in produk[:5]:
+    products = fetch_api_data(limit=10)
+    print(f"=== Successfully fetched {len(products)} products from the API ===")
+    for p in products[:5]:
         print(p)
 
 

@@ -1,26 +1,26 @@
 """
-PIPELINE LENGKAP - Building Scalable Data Pipelines
-===================================================
+COMPLETE PIPELINE - Building Scalable Data Pipelines
+====================================================
 
-Menggabungkan semua langkah menjadi satu pipeline utuh, mengikuti alur:
+Combines all the steps into one end-to-end pipeline, following this flow:
 
-    Scrape beberapa halaman  (BeautifulSoup)
+    Scrape several pages      (BeautifulSoup)
             |
             v
-    Buat dictionary list
+    Build a list of dictionaries
             |
             v
-    Cleaning data            (pandas)
+    Clean the data            (pandas)
             |
             v
-    Buat koneksi database    (SQLite)
+    Open a database connection (SQLite)
             |
             v
-    Buat tabel & insert data
+    Create the table & insert the data
 
-Jalankan:
+Run:
     uv run python pipeline.py
-    uv run python pipeline.py --halaman 5
+    uv run python pipeline.py --pages 5
 """
 
 import argparse
@@ -35,71 +35,71 @@ from bs4 import BeautifulSoup
 BASE_URL = "https://books.toscrape.com/catalogue/page-{}.html"
 RATING_MAP = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 DB_PATH = Path(__file__).resolve().parent / "data" / "ecommerce.db"
-CSV_PATH = Path(__file__).resolve().parent / "data" / "produk.csv"
+CSV_PATH = Path(__file__).resolve().parent / "data" / "products.csv"
 
 
-def extract(jumlah_halaman: int) -> list[dict]:
-    """Scrape beberapa halaman -> dictionary list (data mentah)."""
-    semua: list[dict] = []
-    for halaman in range(1, jumlah_halaman + 1):
-        url = BASE_URL.format(halaman)
-        print(f"[EXTRACT] halaman {halaman}: {url}")
+def extract(page_count: int) -> list[dict]:
+    """Scrape several pages -> list of dictionaries (raw data)."""
+    all_products: list[dict] = []
+    for page in range(1, page_count + 1):
+        url = BASE_URL.format(page)
+        print(f"[EXTRACT] page {page}: {url}")
         resp = requests.get(url, timeout=10)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
         for item in soup.find_all("article", class_="product_pod"):
-            semua.append(
+            all_products.append(
                 {
-                    "nama": item.find("h3").find("a")["title"],
-                    "harga": item.find("p", class_="price_color").text,
+                    "name": item.find("h3").find("a")["title"],
+                    "price": item.find("p", class_="price_color").text,
                     "rating": item.find("p", class_="star-rating")["class"][1],
                 }
             )
-    print(f"[EXTRACT] total {len(semua)} produk terkumpul")
-    return semua
+    print(f"[EXTRACT] collected {len(all_products)} products in total")
+    return all_products
 
 
 def transform(data: list[dict]) -> pd.DataFrame:
-    """Cleaning data dengan pandas."""
+    """Clean the data with pandas."""
     df = pd.DataFrame(data)
-    df["harga"] = df["harga"].apply(lambda x: re.sub(r"[^0-9.]", "", x)).astype(float)
+    df["price"] = df["price"].apply(lambda x: re.sub(r"[^0-9.]", "", x)).astype(float)
     df["rating"] = df["rating"].map(RATING_MAP)
     df = df.dropna().drop_duplicates().reset_index(drop=True)
-    print(f"[TRANSFORM] {len(df)} baris bersih siap disimpan")
+    print(f"[TRANSFORM] {len(df)} clean rows ready to be saved")
     return df
 
 
 def load(df: pd.DataFrame) -> None:
-    """Simpan ke CSV dan database SQLite."""
+    """Save to CSV and a SQLite database."""
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    # Simpan ke CSV (mudah dicek)
+    # Save to CSV (easy to inspect)
     df.to_csv(CSV_PATH, index=False)
-    print(f"[LOAD] CSV tersimpan: {CSV_PATH}")
+    print(f"[LOAD] CSV saved: {CSV_PATH}")
 
-    # Simpan ke SQLite
+    # Save to SQLite
     conn = sqlite3.connect(DB_PATH)
-    df.to_sql("produk", conn, if_exists="replace", index=False)
-    total = conn.execute("SELECT COUNT(*) FROM produk").fetchone()[0]
+    df.to_sql("products", conn, if_exists="replace", index=False)
+    total = conn.execute("SELECT COUNT(*) FROM products").fetchone()[0]
     conn.close()
-    print(f"[LOAD] {total} baris tersimpan ke SQLite: {DB_PATH}")
+    print(f"[LOAD] {total} rows saved to SQLite: {DB_PATH}")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Pipeline scraping e-commerce")
+    parser = argparse.ArgumentParser(description="E-commerce scraping pipeline")
     parser.add_argument(
-        "--halaman", type=int, default=3, help="jumlah halaman yang di-scrape"
+        "--pages", type=int, default=3, help="number of pages to scrape"
     )
     args = parser.parse_args()
 
     print("=" * 55)
-    print("MENJALANKAN PIPELINE")
+    print("RUNNING PIPELINE")
     print("=" * 55)
-    data = extract(args.halaman)
+    data = extract(args.pages)
     df = transform(data)
     load(df)
     print("=" * 55)
-    print("PIPELINE SELESAI")
+    print("PIPELINE COMPLETE")
     print("=" * 55)
 
 

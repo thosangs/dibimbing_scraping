@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>Hands-on Data Engineering</b><br/>
-  Web Scraping (BeautifulSoup + Selenium + XPath) & API Integration untuk E-Commerce
+  Web Scraping (BeautifulSoup + Selenium + XPath) & API Integration for E-Commerce
 </p>
 
 <p align="center">
@@ -20,57 +20,57 @@
 
 <p align="center">
   <a href="https://thosangs.github.io/dibimbing_scraping/"><b>🌐 Live Site (GitHub Pages)</b></a> ·
-  <a href="#menjalankan-tiap-langkah"><b>🪜 Materi Step-by-Step</b></a> ·
-  <a href="#persiapan-pakai-uv"><b>🚀 Quickstart</b></a>
+  <a href="#running-each-step"><b>🪜 Step-by-Step Material</b></a> ·
+  <a href="#setup-using-uv"><b>🚀 Quickstart</b></a>
 </p>
 
 ---
 
-Project ini disusun **step-by-step** mengikuti slide/guideline kelas. Tiap langkah
-adalah satu file yang bisa dijalankan sendiri, jadi enak dipakai untuk mengajar
-sambil _live coding_.
+This project is organized **step-by-step** following the class slides/guidelines. Each step
+is a single, self-contained file you can run on its own, which makes it ideal for teaching
+while _live coding_.
 
 ---
 
-## Alur Pipeline
+## Pipeline Flow
 
 ```
-Scrape 1 item -> Scrape 1 halaman -> Buat Dictionary List -> Scrape Beberapa Halaman
-   -> Cleaning Data -> Buat Koneksi Database -> Buat Tabel & Input Data
+Scrape 1 item -> Scrape 1 page -> Build Dictionary List -> Scrape Multiple Pages
+   -> Clean Data -> Create Database Connection -> Create Table & Insert Data
 ```
 
-## Sumber Data
+## Data Sources
 
-| Teknik              | Website                              | Keterangan                    |
-| ------------------- | ------------------------------------ | ----------------------------- |
-| BeautifulSoup (statis) | https://books.toscrape.com        | Toko buku (sandbox scraping)  |
-| Selenium (dinamis)  | https://quotes.toscrape.com/js       | Konten dibuat oleh JavaScript |
-| API                 | https://dummyjson.com/products       | API e-commerce publik         |
-| XPath playground    | https://scrapinghub.github.io/xpath-playground/ | Latihan XPath      |
+| Technique              | Website                              | Notes                         |
+| ---------------------- | ------------------------------------ | ----------------------------- |
+| BeautifulSoup (static) | https://books.toscrape.com           | Bookstore (scraping sandbox)  |
+| Selenium (dynamic)     | https://quotes.toscrape.com/js       | Content rendered by JavaScript |
+| API                    | https://dummyjson.com/products       | Public e-commerce API         |
+| XPath playground       | https://scrapinghub.github.io/xpath-playground/ | XPath practice     |
 
 ---
 
-## Persiapan (pakai UV)
+## Setup (using UV)
 
-> Project ini memakai **[uv](https://docs.astral.sh/uv/)** sebagai package & environment manager.
-> uv akan otomatis menyiapkan Python 3.12 dan semua library, tanpa ribet `venv` manual.
+> This project uses **[uv](https://docs.astral.sh/uv/)** as its package & environment manager.
+> uv automatically provisions Python 3.12 and all libraries, with no manual `venv` hassle.
 
-### 1. Install uv (kalau belum ada)
+### 1. Install uv (if you don't have it yet)
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-### 2. Install semua dependency
+### 2. Install all dependencies
 
 ```bash
 uv sync
 ```
 
-Itu saja. uv membuat virtual environment di `.venv/` dan menginstall
-`requests`, `beautifulsoup4`, `lxml`, `selenium`, dan `pandas`.
+That's it. uv creates a virtual environment in `.venv/` and installs
+`requests`, `beautifulsoup4`, `lxml`, `selenium`, and `pandas`.
 
-### 3. (Opsional) Untuk PostgreSQL
+### 3. (Optional) For PostgreSQL
 
 ```bash
 uv sync --extra postgres
@@ -78,109 +78,110 @@ uv sync --extra postgres
 
 ---
 
-## Setup untuk Selenium
+## Selenium Setup
 
-### 1. Install browser (Chrome/Chromium)
+### 1. Install a browser (Chrome/Chromium)
 
-Selenium butuh browser sungguhan. Pastikan **Google Chrome** atau **Chromium**
-sudah terpasang di komputer. Kalau sudah biasa pakai Chrome, tidak perlu
-install apa-apa lagi.
+Selenium needs a real browser. Make sure **Google Chrome** or **Chromium**
+is already installed on your machine. If you already use Chrome regularly,
+there's nothing else to install.
 
-### 2. Driver TIDAK perlu diinstall manual
+### 2. The driver does NOT need to be installed manually
 
-Selenium >= 4.6 punya **Selenium Manager** yang otomatis men-download
-ChromeDriver/GeckoDriver yang cocok dengan versi browser. Jadi tidak ada
-langkah install ChromeDriver manual — ini alasan kita pakai setup ini biar
-gampang.
+Selenium >= 4.6 ships with **Selenium Manager**, which automatically downloads
+the ChromeDriver/GeckoDriver that matches your browser version. So there's no
+manual ChromeDriver install step — that's why we use this setup, to keep things
+easy.
 
-> Secara default browser akan **terlihat** saat dijalankan, jadi kita bisa
-> menyaksikan otomasinya saat demo. Kalau ingin jalan tanpa membuka jendela
-> browser, panggil `buat_driver(headless=True)` di dalam script Selenium.
+> By default the browser is **visible** when it runs, so we can watch the
+> automation during a demo. If you want it to run without opening a browser
+> window, call `buat_driver(headless=True)` inside the Selenium script.
 
 ---
 
-## Menjalankan Tiap Langkah
+## Running Each Step
 
-Jalankan dengan `uv run` (uv otomatis pakai environment yang benar):
+Run them with `uv run` (uv automatically uses the correct environment):
 
-| Langkah | Materi                                  | Perintah                                          |
-| ------- | --------------------------------------- | ------------------------------------------------- |
-| 1       | Memahami Data Pipeline                  | `uv run python steps/01_pipeline_overview.py`     |
-| 2       | BeautifulSoup - scrape 1 item           | `uv run python steps/02_bs4_satu_item.py`         |
-| 3       | BeautifulSoup - 1 halaman (dict list)   | `uv run python steps/03_bs4_satu_halaman.py`      |
-| 4       | BeautifulSoup - beberapa halaman        | `uv run python steps/04_bs4_banyak_halaman.py`    |
-| 5       | Selenium - website dinamis              | `uv run python steps/05_selenium_dinamis.py`      |
-| 6       | Selenium - XPath                        | `uv run python steps/06_selenium_xpath.py`        |
-| 7       | API                                     | `uv run python steps/07_api.py`                   |
-| 8       | Cleaning data (pandas)                  | `uv run python steps/08_cleaning.py`              |
-| 9       | Simpan ke database (SQLite/Postgres)    | `uv run python steps/09_simpan_database.py`       |
+| Step | Material                                | Command                                           |
+| ---- | --------------------------------------- | ------------------------------------------------- |
+| 1    | Understanding the Data Pipeline         | `uv run python steps/01_pipeline_overview.py`     |
+| 2    | BeautifulSoup - scrape 1 item           | `uv run python steps/02_bs4_satu_item.py`         |
+| 3    | BeautifulSoup - 1 page (dict list)      | `uv run python steps/03_bs4_satu_halaman.py`      |
+| 4    | BeautifulSoup - multiple pages          | `uv run python steps/04_bs4_banyak_halaman.py`    |
+| 5    | Selenium - dynamic website              | `uv run python steps/05_selenium_dinamis.py`      |
+| 6    | Selenium - XPath                        | `uv run python steps/06_selenium_xpath.py`        |
+| 7    | API                                     | `uv run python steps/07_api.py`                   |
+| 8    | Cleaning data (pandas)                  | `uv run python steps/08_cleaning.py`              |
+| 9    | Save to database (SQLite/Postgres)      | `uv run python steps/09_simpan_database.py`       |
 
-### Notebook walkthrough (untuk live coding)
+### Notebook walkthrough (for live coding)
 
-Selain script per-langkah, ada juga **notebook** yang merangkai semua materi dalam
-satu alur cerita — enak untuk dijelaskan sel-per-sel di depan kelas:
+In addition to the per-step scripts, there's also a **notebook** that ties all the
+material together into one storyline — great for explaining cell by cell in front of
+a class:
 
 ```bash
 uv sync --extra notebook                 # install JupyterLab + ipykernel
-uv run jupyter lab                        # buka, lalu pilih notebook di folder notebooks/
+uv run jupyter lab                        # open it, then pick a notebook in the notebooks/ folder
 ```
 
-Notebook yang tersedia:
+Available notebooks:
 
-- [`notebooks/walkthrough.ipynb`](notebooks/walkthrough.ipynb) — walkthrough seluruh pipeline (semua langkah dalam satu alur).
-- [`notebooks/beautifulsoup_vs_xpath.ipynb`](notebooks/beautifulsoup_vs_xpath.ipynb) — fokus **cara memilih elemen** (tag, class, id, atribut `aria`/`href`/`data-*`, teks, navigasi) dari mudah ke kompleks, tiap case dibandingkan **BeautifulSoup vs XPath**.
+- [`notebooks/walkthrough.ipynb`](notebooks/walkthrough.ipynb) — a walkthrough of the entire pipeline (all steps in one flow).
+- [`notebooks/beautifulsoup_vs_xpath.ipynb`](notebooks/beautifulsoup_vs_xpath.ipynb) — focused on **how to select elements** (tag, class, id, `aria`/`href`/`data-*` attributes, text, navigation) from easy to complex, with each case compared **BeautifulSoup vs XPath**.
 
-**`notebooks/cases/` — kasus-kasus "susah" (satu notebook per kasus):**
+**`notebooks/cases/` — the "hard" cases (one notebook per case):**
 
-- [`cases/01_pagination.ipynb`](notebooks/cases/01_pagination.ipynb) — pagination kompleks (ikuti tombol Next sampai habis; requests vs Selenium).
+- [`cases/01_pagination.ipynb`](notebooks/cases/01_pagination.ipynb) — complex pagination (follow the Next button until it runs out; requests vs Selenium).
 - [`cases/02_infinite_scroll.ipynb`](notebooks/cases/02_infinite_scroll.ipynb) — lazy-load / infinite scroll (hidden API vs Selenium scroll).
-- [`cases/03_webdriverwait.ipynb`](notebooks/cases/03_webdriverwait.ipynb) — `WebDriverWait` + `expected_conditions` (menunggu elemen dengan benar).
-- [`cases/04_tables.ipynb`](notebooks/cases/04_tables.ipynb) — tabel HTML pakai `pandas.read_html` (one-liner).
+- [`cases/03_webdriverwait.ipynb`](notebooks/cases/03_webdriverwait.ipynb) — `WebDriverWait` + `expected_conditions` (waiting for elements correctly).
+- [`cases/04_tables.ipynb`](notebooks/cases/04_tables.ipynb) — HTML tables using `pandas.read_html` (a one-liner).
 
-**`notebooks/misc/` — library bantu:**
+**`notebooks/misc/` — helper libraries:**
 
-- [`misc/newspaper3k.ipynb`](notebooks/misc/newspaper3k.ipynb) — parsing artikel berita otomatis (multi-source) dengan `newspaper4k`. Butuh `uv sync --extra news`.
-- [`misc/ecommerce_scraping.ipynb`](notebooks/misc/ecommerce_scraping.ipynb) — toolkit e-commerce: `extruct` (JSON-LD, contoh berhasil & gagal), `price-parser`, **robots.txt** (scraping baik vs buruk), dan **Scrapy** (async — bandingkan waktu `CONCURRENT_REQUESTS` 1 vs 16) + pola `scrapy-poet`/`zyte`. Butuh `uv sync --extra ecommerce`.
-- [`misc/scrapy_real_case.ipynb`](notebooks/misc/scrapy_real_case.ipynb) — **lab keamanan anti-bot (red vs blue)** pada e-commerce nyata: recon (`robots.txt` via Protego, deteksi SPA + Cloudflare), **tangga eskalasi bypass** (UA → header → sidik jari TLS/JA3 `curl_cffi` → warm-up cookie) yang **benar-benar menembus** API, dikemas jadi **spider Scrapy** (`scrapy-impersonate`) → `pandas`, **plus cara mendeteksi & mencegah tiap teknik**. Untuk edukasi pertahanan. Butuh `uv sync --extra security`.
+- [`misc/newspaper3k.ipynb`](notebooks/misc/newspaper3k.ipynb) — automatic news article parsing (multi-source) with `newspaper4k`. Requires `uv sync --extra news`.
+- [`misc/ecommerce_scraping.ipynb`](notebooks/misc/ecommerce_scraping.ipynb) — an e-commerce toolkit: `extruct` (JSON-LD, with successful & failing examples), `price-parser`, **robots.txt** (good vs bad scraping), and **Scrapy** (async — compare timing for `CONCURRENT_REQUESTS` 1 vs 16) plus the `scrapy-poet`/`zyte` pattern. Requires `uv sync --extra ecommerce`.
+- [`misc/scrapy_real_case.ipynb`](notebooks/misc/scrapy_real_case.ipynb) — an **anti-bot security lab (red vs blue)** on a real e-commerce site: recon (`robots.txt` via Protego, SPA + Cloudflare detection), an **escalation ladder of bypasses** (UA → headers → TLS/JA3 fingerprint with `curl_cffi` → cookie warm-up) that **actually breaks through** the API, packaged into a **Scrapy spider** (`scrapy-impersonate`) → `pandas`, **plus how to detect & prevent each technique**. For defensive education. Requires `uv sync --extra security`.
 
-### Pipeline lengkap (end-to-end)
+### Full pipeline (end-to-end)
 
 ```bash
-uv run python pipeline.py            # default 3 halaman
-uv run python pipeline.py --halaman 5
+uv run python pipeline.py            # defaults to 3 pages
+uv run python pipeline.py --pages 5
 ```
 
-Hasilnya tersimpan di `data/produk.csv` dan `data/ecommerce.db` (SQLite).
+The results are saved to `data/products.csv` and `data/ecommerce.db` (SQLite).
 
-Cek isi database SQLite:
+Inspect the SQLite database contents:
 
 ```bash
-uv run python -c "import sqlite3; print(sqlite3.connect('data/ecommerce.db').execute('SELECT * FROM produk LIMIT 5').fetchall())"
+uv run python -c "import sqlite3; print(sqlite3.connect('data/ecommerce.db').execute('SELECT * FROM products LIMIT 5').fetchall())"
 ```
 
 ---
 
-## Struktur Project
+## Project Structure
 
 ```
 dibimbing_scraping/
 ├── README.md
-├── pyproject.toml              # dependency (dikelola uv)
+├── pyproject.toml              # dependencies (managed by uv)
 ├── .python-version             # Python 3.12
-├── pipeline.py                 # pipeline lengkap (extract -> transform -> load)
+├── pipeline.py                 # full pipeline (extract -> transform -> load)
 ├── notebooks/
-│   ├── walkthrough.ipynb            # walkthrough semua langkah dalam 1 notebook
-│   ├── beautifulsoup_vs_xpath.ipynb # cara memilih elemen: BS4 vs XPath (mudah->kompleks)
-│   ├── cases/                       # kasus-kasus "susah" (1 notebook per kasus)
+│   ├── walkthrough.ipynb            # walkthrough of all steps in 1 notebook
+│   ├── beautifulsoup_vs_xpath.ipynb # how to select elements: BS4 vs XPath (easy->complex)
+│   ├── cases/                       # the "hard" cases (1 notebook per case)
 │   │   ├── 01_pagination.ipynb
 │   │   ├── 02_infinite_scroll.ipynb
 │   │   ├── 03_webdriverwait.ipynb
 │   │   └── 04_tables.ipynb
 │   └── misc/
-│       ├── newspaper3k.ipynb        # parsing artikel berita (newspaper4k)
+│       ├── newspaper3k.ipynb        # news article parsing (newspaper4k)
 │       ├── ecommerce_scraping.ipynb # extruct + price-parser + robots.txt + Scrapy (async)
-│       └── scrapy_real_case.ipynb   # lab keamanan anti-bot (red/blue) + spider Scrapy nyata
-├── steps/                      # materi step-by-step
+│       └── scrapy_real_case.ipynb   # anti-bot security lab (red/blue) + real Scrapy spider
+├── steps/                      # step-by-step material
 │   ├── 01_pipeline_overview.py
 │   ├── 02_bs4_satu_item.py
 │   ├── 03_bs4_satu_halaman.py
@@ -190,5 +191,5 @@ dibimbing_scraping/
 │   ├── 07_api.py
 │   ├── 08_cleaning.py
 │   └── 09_simpan_database.py
-└── data/                       # output CSV & database (otomatis dibuat)
+└── data/                       # CSV & database output (created automatically)
 ```
