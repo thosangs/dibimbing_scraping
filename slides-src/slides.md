@@ -276,7 +276,7 @@ for card in soup.select("article.product_pod"):
 
 ## Dynamic pages: Selenium + explicit waits
 
-```python {all|1-3|5-9|11-13|all}
+```python {all|1-3|5-9|11-13}
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
