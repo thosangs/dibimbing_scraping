@@ -41,7 +41,7 @@ layout: section
 <div class="grid grid-cols-2 gap-x-10 gap-y-3 mt-8 text-lg">
   <div>1 — Scraping vs APIs, and the ETL mindset</div>
   <div>2 — <code>uv</code>: zero-pain environments &amp; drivers</div>
-  <div>3 — <code>requests</code> + BeautifulSoup fundamentals</div>
+  <div>3 — HTML &amp; the DOM, then BeautifulSoup</div>
   <div>4 — BeautifulSoup vs XPath, easy → hard</div>
   <div>5 — Dynamic pages with Selenium &amp; explicit waits</div>
   <div>6 — Four hard cases, one slide each</div>
@@ -177,6 +177,45 @@ uv run jupyter lab
 </div>
 
 > No more "works on my machine." `uv sync` gives every student the same environment.
+
+---
+
+## What is HTML? Tags, attributes &amp; the DOM
+
+<div class="grid grid-cols-2 gap-8 mt-2 items-start">
+
+<div>
+
+A web page is a tree of **nested elements**. The browser parses it into the **DOM** — the tree we actually scrape.
+
+```html
+<div class="product" data-sku="A12">
+  <h3 class="title">Bike Helmet</h3>
+  <span class="price">£24.99</span>
+  <a href="/p/a12">View details</a>
+</div>
+```
+
+- **Element** = opening tag + attributes + content + closing tag
+- **Attributes** we target: `class`, `id`, `href`, `data-*`
+- Nesting builds the **tree** that BeautifulSoup &amp; XPath walk
+
+</div>
+
+<div>
+
+#### Careful: the data may not be there yet
+
+- **Static page** — data already lives in the HTML, so `requests` can read it
+- **JS app** — the HTML arrives as an **empty shell**; JavaScript fetches &amp; fills it *after* load
+
+![Raw HTML is empty until JavaScript populates it after load](./images/dynamic-content.png){.shot}
+
+<div class="caption">We'll crawl these with Selenium + <code>WebDriverWait</code> later</div>
+
+</div>
+
+</div>
 
 ---
 
