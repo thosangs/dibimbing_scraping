@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selector Practice Lab · Web Scraping & API Integration</title>
+  <meta name="description" content="Hands-on practice lab for CSS (BeautifulSoup) and XPath selectors — runs entirely in your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="eyebrow">Hands-on Data Extraction</span>
+      <h1>Selector Practice Lab</h1>
+      <p class="tagline">Latih <strong>CSS (BeautifulSoup)</strong> &amp; <strong>XPath</strong> — jalan penuh di browser, tanpa server.</p>
+    </div>
+    <nav class="topnav">
+      <a href="../">Project home</a>
+      <a href="../slides/">Slides</a>
+      <a href="https://github.com/thosangs/dibimbing_scraping">GitHub</a>
+    </nav>
+  </header>
+
+  <div class="modebar">
+    <button class="mode-tab is-active" data-mode="materi">Materi (belajar)</button>
+    <button class="mode-tab" data-mode="practice">Latihan (graded)</button>
+    <button class="mode-tab" data-mode="playground">Playground (paste HTML)</button>
+    <div class="engine-toggle" id="engine-toggle" role="group" aria-label="Selector engine">
+      <button class="eng-btn is-active" data-engine="css">CSS · BeautifulSoup</button>
+      <button class="eng-btn" data-engine="xpath">XPath</button>
+    </div>
+  </div>
+
+  <main class="layout">
+    <!-- LEFT: controls -->
+    <section class="pane pane-left">
+      <!-- Materi -->
+      <div id="materi" class="mode-panel">
+        <div class="row-between">
+          <span class="panel-label">Materi — dari mudah ke sulit</span>
+          <div class="progress">
+            <div class="progress-track"><div class="progress-fill" id="lesson-progress-fill"></div></div>
+            <span id="lesson-progress-label" class="progress-label">0/0</span>
+          </div>
+        </div>
+        <!-- filter bar inside Materi -->
+        <div class="lesson-filter-bar">
+          <button class="lf-btn is-active" data-lf="all">Semua</button>
+          <button class="lf-btn" data-lf="css">CSS</button>
+          <button class="lf-btn" data-lf="xpath">XPath</button>
+          <span class="lf-count" id="lf-count"></span>
+        </div>
+        <ol class="lesson-list" id="lesson-list"></ol>
+
+        <div class="card lesson-card" id="lesson-card">
+          <div class="lesson-head">
+            <span class="level-badge" id="lesson-level">Easy</span>
+            <h3 class="lesson-title" id="lesson-title"></h3>
+          </div>
+          <div class="lesson-intro" id="lesson-intro"></div>
+          <div class="goal" id="lesson-goal"></div>
+
+          <div class="selector-row lesson-input-wrap">
+            <input type="text" id="lesson-input" class="selector-input" spellcheck="false"
+                   placeholder="coba sendiri dulu…" autocomplete="off" />
+          </div>
+          <div class="lesson-try-bar">
+            <span class="lesson-try-label">Coba dengan:</span>
+            <div class="lesson-eng-toggle" role="group">
+              <button class="leng-btn is-active" data-leng="css">CSS</button>
+              <button class="leng-btn" data-leng="xpath">XPath</button>
+            </div>
+            <span class="lesson-ans-hint" id="lesson-ans-hint"></span>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" id="lesson-run">Run (highlight)</button>
+            <button class="btn btn-primary" id="lesson-reveal">Lihat jawaban</button>
+          </div>
+          <div class="answer-box" id="lesson-answer" hidden></div>
+          <div class="output" id="lesson-output"></div>
+
+          <div class="btn-row lesson-nav">
+            <button class="btn btn-link" id="lesson-prev">← Sebelumnya</button>
+            <button class="btn btn-link" id="lesson-next">Berikutnya →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div id="practice" class="mode-panel" hidden>
+        <div class="row-between">
+          <label class="field">
+            <span>Halaman</span>
+            <select id="page-select"></select>
+          </label>
+          <div class="progress">
+            <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+            <span id="progress-label" class="progress-label">0/0</span>
+          </div>
+        </div>
+        <p class="blurb" id="page-blurb"></p>
+
+        <ol class="task-list" id="task-list"></ol>
+
+        <div class="task-active card" id="task-active" hidden>
+          <div class="task-active-head">
+            <span class="task-badge" id="active-num">1</span>
+            <p class="task-prompt" id="active-prompt"></p>
+          </div>
+          <details class="hint" id="active-hint-wrap">
+            <summary>Hint</summary>
+            <p id="active-hint"></p>
+          </details>
+
+          <div class="selector-row">
+            <input type="text" id="selector-input" class="selector-input" spellcheck="false"
+                   placeholder="ketik selector di sini…" autocomplete="off" />
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" id="btn-run">Run (highlight)</button>
+            <button class="btn btn-primary" id="btn-check">Check answer</button>
+          </div>
+          <div class="feedback" id="feedback" hidden></div>
+          <div class="output" id="output"></div>
+        </div>
+
+        <button class="btn btn-link" id="btn-reset">Reset progress halaman ini</button>
+      </div>
+
+      <!-- Playground -->
+      <div id="playground" class="mode-panel" hidden>
+        <label class="field">
+          <span>Tempel HTML di sini, lalu Load</span>
+          <textarea id="paste-html" class="paste-html" spellcheck="false"
+                    placeholder="<div class=&quot;product&quot;> … </div>"></textarea>
+        </label>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-load-html">Load HTML</button>
+          <button class="btn btn-link" id="btn-sample">Pakai contoh</button>
+        </div>
+        <div class="selector-row">
+          <input type="text" id="pg-selector-input" class="selector-input" spellcheck="false"
+                 placeholder="ketik selector di sini…" autocomplete="off" />
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="pg-btn-run">Run (highlight)</button>
+        </div>
+        <div class="feedback" id="pg-feedback" hidden></div>
+        <div class="output" id="pg-output"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: display -->
+    <section class="pane pane-right">
+      <div class="display-head">
+        <span class="display-title" id="display-title">Display</span>
+        <div class="view-toggle" role="group" aria-label="View">
+          <button class="view-btn is-active" data-view="preview">Preview</button>
+          <button class="view-btn" data-view="source">HTML source</button>
+        </div>
+      </div>
+      <div class="display-body">
+        <iframe id="preview" class="preview-frame" title="Rendered page preview" sandbox=""></iframe>
+        <pre id="source" class="source-view" hidden><code id="source-code"></code></pre>
+      </div>
+      <p class="display-note" id="match-note">Elemen yang cocok di-highlight emas.</p>
+    </section>
+  </main>
+
+  <script src="tasks.js"></script>
+  <script src="lessons.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

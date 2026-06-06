@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bookstore — Catalogue</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 22px; color: #222; background: #fff; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .subtitle { color: #777; margin: 0 0 20px; font-size: 14px; }
+    ol.row { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 0; margin: 0; }
+    article.product_pod { border: 1px solid #e3e3e3; border-radius: 8px; padding: 14px; text-align: center; }
+    .image_container { height: 90px; display: flex; align-items: center; justify-content: center; background: #f6f6f6; border-radius: 6px; margin-bottom: 10px; }
+    .image_container .cover { width: 54px; height: 78px; background: linear-gradient(135deg,#8aa0c8,#4a5d86); border-radius: 3px; }
+    .star-rating { color: #f0a90b; font-size: 13px; letter-spacing: 2px; margin: 4px 0; }
+    h3 { font-size: 14px; margin: 6px 0; font-weight: 600; }
+    h3 a { color: #1a3b6e; text-decoration: none; }
+    .product_price { margin-top: 8px; }
+    .price_color { color: #1a7f4b; font-weight: 700; margin: 0 0 6px; }
+    .availability { font-size: 12px; color: #6b8f3a; }
+    .availability.outofstock { color: #b23b3b; }
+    button.add { margin-top: 8px; font-size: 12px; padding: 5px 10px; border: 1px solid #1a3b6e; background: #1a3b6e; color: #fff; border-radius: 5px; }
+    nav.pager { margin-top: 22px; display: flex; justify-content: space-between; align-items: center; }
+    .pager .current { color: #888; font-size: 13px; }
+    .pager a { color: #1a3b6e; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>All products</h1>
+    <p class="subtitle">A small catalogue page, styled after a classic scraping-practice bookstore.</p>
+  </header>
+
+  <section id="catalogue">
+    <ol class="row">
+      <li>
+        <article class="product_pod" data-id="1">
+          <div class="image_container"><a href="catalogue/a-light-in-the-attic_1000/index.html"><span class="cover"></span></a></div>
+          <p class="star-rating Three" aria-label="Rated 3 out of 5">★★★☆☆</p>
+          <h3><a href="catalogue/a-light-in-the-attic_1000/index.html" title="A Light in the Attic">A Light in the Attic</a></h3>
+          <div class="product_price">
+            <p class="price_color">£51.77</p>
+            <p class="instock availability">In stock</p>
+            <button class="add" type="button">Add to basket</button>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="product_pod" data-id="2">
+          <div class="image_container"><a href="catalogue/tipping-the-velvet_999/index.html"><span class="cover"></span></a></div>
+          <p class="star-rating One" aria-label="Rated 1 out of 5">★☆☆☆☆</p>
+          <h3><a href="catalogue/tipping-the-velvet_999/index.html" title="Tipping the Velvet">Tipping the Velvet</a></h3>
+          <div class="product_price">
+            <p class="price_color">£53.74</p>
+            <p class="instock availability">In stock</p>
+            <button class="add" type="button">Add to basket</button>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="product_pod" data-id="3">
+          <div class="image_container"><a href="catalogue/soumission_998/index.html"><span class="cover"></span></a></div>
+          <p class="star-rating Four" aria-label="Rated 4 out of 5">★★★★☆</p>
+          <h3><a href="catalogue/soumission_998/index.html" title="Soumission">Soumission</a></h3>
+          <div class="product_price">
+            <p class="price_color">£50.10</p>
+            <p class="instock availability">In stock</p>
+            <button class="add" type="button">Add to basket</button>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="product_pod" data-id="4">
+          <div class="image_container"><a href="catalogue/sharp-objects_997/index.html"><span class="cover"></span></a></div>
+          <p class="star-rating Five" aria-label="Rated 5 out of 5">★★★★★</p>
+          <h3><a href="catalogue/sharp-objects_997/index.html" title="Sharp Objects">Sharp Objects</a></h3>
+          <div class="product_price">
+            <p class="price_color">£47.82</p>
+            <p class="instock availability">In stock</p>
+            <button class="add" type="button">Add to basket</button>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="product_pod" data-id="5">
+          <div class="image_container"><a href="catalogue/the-requiem-red_995/index.html"><span class="cover"></span></a></div>
+          <p class="star-rating Two" aria-label="Rated 2 out of 5">★★☆☆☆</p>
+          <h3><a href="catalogue/the-requiem-red_995/index.html" title="The Requiem Red">The Requiem Red</a></h3>
+          <div class="product_price">
+            <p class="price_color">£22.65</p>
+            <p class="instock availability">In stock</p>
+            <button class="add" type="button">Add to basket</button>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="product_pod" data-id="6">
+          <div class="image_container"><a href="catalogue/olio_984/index.html"><span class="cover"></span></a></div>
+          <p class="star-rating Three" aria-label="Rated 3 out of 5">★★★☆☆</p>
+          <h3><a href="catalogue/olio_984/index.html" title="Olio">Olio</a></h3>
+          <div class="product_price">
+            <p class="price_color">£23.88</p>
+            <p class="outofstock availability">Out of stock</p>
+            <button class="add" type="button" disabled>Add to basket</button>
+          </div>
+        </article>
+      </li>
+    </ol>
+  </section>
+
+  <nav class="pager">
+    <span class="current">Page 1 of 50</span>
+    <ul style="list-style:none;display:flex;gap:14px;padding:0;margin:0;">
+      <li class="previous"><span>previous</span></li>
+      <li class="next"><a href="catalogue/page-2.html">next →</a></li>
+    </ul>
+  </nav>
+</body>
+</html>
