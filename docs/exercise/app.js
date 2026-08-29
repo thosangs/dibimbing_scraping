@@ -40,13 +40,11 @@
     selectorInput: $("selector-input"), btnRun: $("btn-run"), btnCheck: $("btn-check"),
     feedback: $("feedback"), output: $("output"), btnReset: $("btn-reset"),
     progressFill: $("progress-fill"), progressLabel: $("progress-label"),
-    practice: $("practice"), playground: $("playground"),
     pasteHtml: $("paste-html"), btnLoadHtml: $("btn-load-html"), btnSample: $("btn-sample"),
     pgInput: $("pg-selector-input"), pgRun: $("pg-btn-run"), pgFeedback: $("pg-feedback"), pgOutput: $("pg-output"),
     preview: $("preview"), source: $("source"), sourceCode: $("source-code"),
     displayTitle: $("display-title"), matchNote: $("match-note"),
     // materi
-    materi: $("materi"),
     lessonList: $("lesson-list"),
     lessonLevel: $("lesson-level"), lessonTitle: $("lesson-title"),
     lessonIntro: $("lesson-intro"), lessonGoal: $("lesson-goal"),
@@ -57,21 +55,8 @@
     lessonAnsHint: $("lesson-ans-hint"),
     lfCount: $("lf-count"),
     engineToggle: $("engine-toggle"),
-    // collapsible navigators
-    lessonNavToggle: $("lesson-nav-toggle"), lessonNavPanel: $("lesson-nav-panel"), lessonNavPos: $("lesson-nav-pos"),
-    taskNavToggle: $("task-nav-toggle"), taskNavPanel: $("task-nav-panel"), taskNavPos: $("task-nav-pos"),
     taskPrev: $("task-prev"), taskNext: $("task-next"),
   };
-
-  // ---------- collapsible navigator helpers ----------
-  function setNav(toggle, panel, open) {
-    if (!toggle || !panel) return;
-    panel.hidden = !open;
-    toggle.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-  function toggleNav(toggle, panel) {
-    setNav(toggle, panel, panel.hidden);
-  }
 
   // ---------- storage ----------
   const loadProgress = () => {
@@ -188,6 +173,7 @@
     pageId = pid;
     const page = DATA[pid];
     els.pageBlurb.textContent = page.blurb || "";
+    els.displayTitle.textContent = page.label || "Display";
     try {
       const resp = await fetch(page.file, { cache: "no-cache" });
       rawHtml = await resp.text();
@@ -218,10 +204,7 @@
       li.innerHTML =
         `<span class="task-status ${status || ""}">${badge}</span>` +
         `<span class="ttext">${escapeHtml(t.prompt)}</span>`;
-      li.addEventListener("click", () => {
-        selectTask(t.id);
-        setNav(els.taskNavToggle, els.taskNavPanel, false);
-      });
+      li.addEventListener("click", () => selectTask(t.id));
       els.taskList.appendChild(li);
     });
   }
@@ -239,7 +222,6 @@
     els.feedback.hidden = true;
     els._target = els.output;
     els.output.innerHTML = "";
-    if (els.taskNavPos) els.taskNavPos.textContent = `${idx + 1}/${page.tasks.length}`;
     if (els.taskPrev) els.taskPrev.disabled = idx <= 0;
     if (els.taskNext) els.taskNext.disabled = idx >= page.tasks.length - 1;
     const st = taskState(pageId, tid);
@@ -405,7 +387,6 @@
     if (cur && !visible.includes(cur) && visible.length > 0) {
       selectLesson(LESSONS.indexOf(visible[0]));
     } else {
-      if (els.lessonNavPos && cur) els.lessonNavPos.textContent = `${visible.indexOf(cur) + 1}/${visible.length}`;
       buildLessonList();
     }
   }
@@ -426,10 +407,7 @@
         `<span class="eng-dot ${ls.engine}"></span>` +
         `<span class="level-badge ${ls.level}">${ls.level}</span>` +
         `<span class="ltext">${escapeHtml(ls.title)}</span>`;
-      li.addEventListener("click", () => {
-        selectLesson(i);
-        setNav(els.lessonNavToggle, els.lessonNavPanel, false);
-      });
+      li.addEventListener("click", () => selectLesson(i));
       els.lessonList.appendChild(li);
     });
     if (els.lfCount) els.lfCount.textContent = `${visible.length} lesson`;
@@ -456,7 +434,6 @@
     const visIdx = visible.indexOf(ls);
     els.lessonPrev.disabled = visIdx <= 0;
     els.lessonNext.disabled = visIdx >= visible.length - 1;
-    if (els.lessonNavPos) els.lessonNavPos.textContent = `${visIdx + 1}/${visible.length}`;
     els.displayTitle.textContent = ls.title;
     renderDisplay(LESSON_BASE + lessonRaw, null, lessonRaw);
     setView("preview");
@@ -536,9 +513,9 @@
     mode = m;
     document.querySelectorAll(".mode-tab").forEach((b) =>
       b.classList.toggle("is-active", b.dataset.mode === m));
-    els.materi.hidden = m !== "materi";
-    els.practice.hidden = m !== "practice";
-    els.playground.hidden = m !== "playground";
+    // Each mode has parts in the list column AND the submission column.
+    document.querySelectorAll("[data-modepanel]").forEach((el) =>
+      { el.hidden = el.dataset.modepanel !== m; });
     // Global engine toggle is only useful in Practice/Playground where students type freely.
     // In Materi each lesson defines its own engine — the badge shows it instead.
     if (els.engineToggle) els.engineToggle.style.display = m === "materi" ? "none" : "";
@@ -548,6 +525,9 @@
       renderDisplay(LESSON_BASE + lessonRaw, null, lessonRaw);
       setView("preview");
     } else if (m === "practice") {
+      // Load the practice page on first entry (avoids painting it into the
+      // shared preview while the user is still on Materi).
+      if (!pageId) { loadPage(els.pageSelect.value); return; }
       els.displayTitle.textContent = DATA[pageId] ? DATA[pageId].label : "Display";
       renderDisplay(rawHtml, null);
     } else {
@@ -585,12 +565,6 @@
     if (els.taskPrev) els.taskPrev.addEventListener("click", () => gotoTask(-1));
     if (els.taskNext) els.taskNext.addEventListener("click", () => gotoTask(1));
 
-    // collapsible navigators
-    if (els.lessonNavToggle) els.lessonNavToggle.addEventListener("click",
-      () => toggleNav(els.lessonNavToggle, els.lessonNavPanel));
-    if (els.taskNavToggle) els.taskNavToggle.addEventListener("click",
-      () => toggleNav(els.taskNavToggle, els.taskNavPanel));
-
     els.btnLoadHtml.addEventListener("click", loadPasted);
     els.btnSample.addEventListener("click", () => { els.pasteHtml.value = SAMPLE; loadPasted(); });
     els.pgRun.addEventListener("click", playgroundRun);
@@ -608,14 +582,9 @@
 
     updateLessonProgress();
 
-    const showMateri = () => {
-      if (LESSONS.length) selectLesson(0);
-      setMode("materi");
-    };
-    const firstPage = Object.keys(DATA)[0];
-    // Preload the practice page silently, then land on Materi so the lesson view wins.
-    if (firstPage) loadPage(firstPage).then(showMateri, showMateri);
-    else showMateri();
+    // Land on Materi. The practice page loads lazily on first switch to Latihan.
+    if (LESSONS.length) selectLesson(0);
+    setMode("materi");
   }
 
   document.addEventListener("DOMContentLoaded", init);
