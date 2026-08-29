@@ -159,6 +159,42 @@ select { font-family: 'Inter', sans-serif; cursor: pointer; }
 .source-view code { font-size: 12px; line-height: 1.55; color: #cdd6f0; white-space: pre; }
 .display-note { padding: 9px 18px; font-size: 12px; color: var(--muted); border-top: 1px solid rgba(201, 162, 74, 0.10); }
 
+/* collapsible navigator (Materi + Practice) */
+.nav-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.nav-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  color: var(--text); background: var(--card-2); border: 1px solid var(--line);
+  padding: 8px 13px; border-radius: 9px; transition: all .14s ease;
+}
+.nav-toggle:hover { border-color: var(--gold); }
+.nav-toggle .nav-toggle-ico { color: var(--gold); font-size: 14px; line-height: 1; }
+.nav-toggle .nav-toggle-pos {
+  font-size: 11.5px; font-weight: 700; color: var(--gold-light);
+  background: rgba(201, 162, 74, 0.14); border: 1px solid rgba(201, 162, 74, 0.3);
+  padding: 1px 8px; border-radius: 999px; font-variant-numeric: tabular-nums;
+}
+.nav-toggle .nav-toggle-caret { color: var(--muted); font-size: 11px; transition: transform .18s ease; }
+.nav-toggle[aria-expanded="true"] { border-color: var(--gold); background: rgba(201, 162, 74, 0.10); }
+.nav-toggle[aria-expanded="true"] .nav-toggle-caret { transform: rotate(180deg); }
+.nav-panel {
+  margin-bottom: 14px; padding: 12px; border: 1px solid var(--line);
+  border-radius: 11px; background: rgba(10, 16, 36, 0.5);
+}
+.nav-panel .lesson-list, .nav-panel .task-list { max-height: 46vh; overflow-y: auto; margin: 0; padding-right: 4px; }
+.nav-panel .lesson-filter-bar { margin-top: 0; }
+
+/* answer zone — clearly marks where to type */
+.answer-zone {
+  margin: 14px 0 4px; padding: 12px 13px 13px;
+  border: 1px solid rgba(201, 162, 74, 0.32); border-radius: 11px;
+  background: rgba(201, 162, 74, 0.055);
+}
+.answer-zone-label { font-size: 12px; color: var(--gold-light); font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+.answer-zone-label strong { color: #fff; }
+.answer-zone .selector-input { border-color: rgba(201, 162, 74, 0.4); }
+.task-nav { justify-content: space-between; margin-top: 4px; }
+
 /* materi / lessons */
 .panel-label { font-size: 12.5px; color: var(--muted); font-weight: 600; }
 /* filter bar */
@@ -236,7 +272,11 @@ select { font-family: 'Inter', sans-serif; cursor: pointer; }
 .lesson-nav { justify-content: space-between; margin-top: 14px; }
 
 @media (max-width: 880px) {
-  .layout { grid-template-columns: 1fr; }
+  /* stack panes as normal blocks so the whole page scrolls —
+     otherwise each pane scrolls internally and the lesson card hides. */
+  .layout { display: block; }
+  .pane { overflow: visible; }
   .pane-left { border-right: none; border-bottom: 1px solid rgba(201,162,74,0.12); }
-  .pane-right { min-height: 60vh; }
+  .pane-right { min-height: 70vh; }
+  .nav-panel .lesson-list, .nav-panel .task-list { max-height: 50vh; }
 }

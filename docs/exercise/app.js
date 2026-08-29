@@ -57,7 +57,21 @@
     lessonAnsHint: $("lesson-ans-hint"),
     lfCount: $("lf-count"),
     engineToggle: $("engine-toggle"),
+    // collapsible navigators
+    lessonNavToggle: $("lesson-nav-toggle"), lessonNavPanel: $("lesson-nav-panel"), lessonNavPos: $("lesson-nav-pos"),
+    taskNavToggle: $("task-nav-toggle"), taskNavPanel: $("task-nav-panel"), taskNavPos: $("task-nav-pos"),
+    taskPrev: $("task-prev"), taskNext: $("task-next"),
   };
+
+  // ---------- collapsible navigator helpers ----------
+  function setNav(toggle, panel, open) {
+    if (!toggle || !panel) return;
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  function toggleNav(toggle, panel) {
+    setNav(toggle, panel, panel.hidden);
+  }
 
   // ---------- storage ----------
   const loadProgress = () => {
@@ -204,7 +218,10 @@
       li.innerHTML =
         `<span class="task-status ${status || ""}">${badge}</span>` +
         `<span class="ttext">${escapeHtml(t.prompt)}</span>`;
-      li.addEventListener("click", () => selectTask(t.id));
+      li.addEventListener("click", () => {
+        selectTask(t.id);
+        setNav(els.taskNavToggle, els.taskNavPanel, false);
+      });
       els.taskList.appendChild(li);
     });
   }
@@ -222,6 +239,9 @@
     els.feedback.hidden = true;
     els._target = els.output;
     els.output.innerHTML = "";
+    if (els.taskNavPos) els.taskNavPos.textContent = `${idx + 1}/${page.tasks.length}`;
+    if (els.taskPrev) els.taskPrev.disabled = idx <= 0;
+    if (els.taskNext) els.taskNext.disabled = idx >= page.tasks.length - 1;
     const st = taskState(pageId, tid);
     if (st && st.input) {
       els.selectorInput.value = st.input;
@@ -288,6 +308,14 @@
     }).length;
     els.progressFill.style.width = total ? `${(done / total) * 100}%` : "0%";
     els.progressLabel.textContent = `${done}/${total}`;
+  }
+
+  function gotoTask(delta) {
+    const page = DATA[pageId];
+    if (!page) return;
+    const idx = page.tasks.findIndex((t) => t.id === activeTaskId);
+    const ni = idx + delta;
+    if (ni >= 0 && ni < page.tasks.length) selectTask(page.tasks[ni].id);
   }
 
   function resetPage() {
@@ -377,6 +405,7 @@
     if (cur && !visible.includes(cur) && visible.length > 0) {
       selectLesson(LESSONS.indexOf(visible[0]));
     } else {
+      if (els.lessonNavPos && cur) els.lessonNavPos.textContent = `${visible.indexOf(cur) + 1}/${visible.length}`;
       buildLessonList();
     }
   }
@@ -397,7 +426,10 @@
         `<span class="eng-dot ${ls.engine}"></span>` +
         `<span class="level-badge ${ls.level}">${ls.level}</span>` +
         `<span class="ltext">${escapeHtml(ls.title)}</span>`;
-      li.addEventListener("click", () => selectLesson(i));
+      li.addEventListener("click", () => {
+        selectLesson(i);
+        setNav(els.lessonNavToggle, els.lessonNavPanel, false);
+      });
       els.lessonList.appendChild(li);
     });
     if (els.lfCount) els.lfCount.textContent = `${visible.length} lesson`;
@@ -424,6 +456,7 @@
     const visIdx = visible.indexOf(ls);
     els.lessonPrev.disabled = visIdx <= 0;
     els.lessonNext.disabled = visIdx >= visible.length - 1;
+    if (els.lessonNavPos) els.lessonNavPos.textContent = `${visIdx + 1}/${visible.length}`;
     els.displayTitle.textContent = ls.title;
     renderDisplay(LESSON_BASE + lessonRaw, null, lessonRaw);
     setView("preview");
@@ -549,6 +582,14 @@
     els.btnCheck.addEventListener("click", practiceCheck);
     els.btnReset.addEventListener("click", resetPage);
     els.selectorInput.addEventListener("keydown", (e) => { if (e.key === "Enter") practiceCheck(); });
+    if (els.taskPrev) els.taskPrev.addEventListener("click", () => gotoTask(-1));
+    if (els.taskNext) els.taskNext.addEventListener("click", () => gotoTask(1));
+
+    // collapsible navigators
+    if (els.lessonNavToggle) els.lessonNavToggle.addEventListener("click",
+      () => toggleNav(els.lessonNavToggle, els.lessonNavPanel));
+    if (els.taskNavToggle) els.taskNavToggle.addEventListener("click",
+      () => toggleNav(els.taskNavToggle, els.taskNavPanel));
 
     els.btnLoadHtml.addEventListener("click", loadPasted);
     els.btnSample.addEventListener("click", () => { els.pasteHtml.value = SAMPLE; loadPasted(); });

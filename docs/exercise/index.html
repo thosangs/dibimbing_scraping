@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=3" />
 </head>
 <body>
   <header class="topbar">
@@ -39,21 +39,30 @@
     <section class="pane pane-left">
       <!-- Materi -->
       <div id="materi" class="mode-panel">
-        <div class="row-between">
-          <span class="panel-label">Materi — dari mudah ke sulit</span>
+        <!-- compact top bar: collapsible navigator toggle + progress -->
+        <div class="nav-topbar">
+          <button class="nav-toggle" id="lesson-nav-toggle" type="button" aria-expanded="false" aria-controls="lesson-nav-panel">
+            <span class="nav-toggle-ico">☰</span>
+            <span class="nav-toggle-text">Daftar lesson</span>
+            <span class="nav-toggle-pos" id="lesson-nav-pos">1/30</span>
+            <span class="nav-toggle-caret" aria-hidden="true">▾</span>
+          </button>
           <div class="progress">
             <div class="progress-track"><div class="progress-fill" id="lesson-progress-fill"></div></div>
             <span id="lesson-progress-label" class="progress-label">0/0</span>
           </div>
         </div>
-        <!-- filter bar inside Materi -->
-        <div class="lesson-filter-bar">
-          <button class="lf-btn is-active" data-lf="all">Semua</button>
-          <button class="lf-btn" data-lf="css">CSS</button>
-          <button class="lf-btn" data-lf="xpath">XPath</button>
-          <span class="lf-count" id="lf-count"></span>
+
+        <!-- collapsible navigator: filter + lesson list -->
+        <div class="nav-panel" id="lesson-nav-panel" hidden>
+          <div class="lesson-filter-bar">
+            <button class="lf-btn is-active" data-lf="all">Semua</button>
+            <button class="lf-btn" data-lf="css">CSS</button>
+            <button class="lf-btn" data-lf="xpath">XPath</button>
+            <span class="lf-count" id="lf-count"></span>
+          </div>
+          <ol class="lesson-list" id="lesson-list"></ol>
         </div>
-        <ol class="lesson-list" id="lesson-list"></ol>
 
         <div class="card lesson-card" id="lesson-card">
           <div class="lesson-head">
@@ -63,21 +72,25 @@
           <div class="lesson-intro" id="lesson-intro"></div>
           <div class="goal" id="lesson-goal"></div>
 
-          <div class="selector-row lesson-input-wrap">
-            <input type="text" id="lesson-input" class="selector-input" spellcheck="false"
-                   placeholder="coba sendiri dulu…" autocomplete="off" />
-          </div>
-          <div class="lesson-try-bar">
-            <span class="lesson-try-label">Coba dengan:</span>
-            <div class="lesson-eng-toggle" role="group">
-              <button class="leng-btn is-active" data-leng="css">CSS</button>
-              <button class="leng-btn" data-leng="xpath">XPath</button>
+          <!-- answer zone: clearly marked place to type -->
+          <div class="answer-zone">
+            <div class="answer-zone-label">✍️ Tulis selector-mu di sini, lalu <strong>Run</strong> untuk highlight</div>
+            <div class="selector-row lesson-input-wrap">
+              <input type="text" id="lesson-input" class="selector-input" spellcheck="false"
+                     placeholder="coba sendiri dulu…" autocomplete="off" />
             </div>
-            <span class="lesson-ans-hint" id="lesson-ans-hint"></span>
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-ghost" id="lesson-run">Run (highlight)</button>
-            <button class="btn btn-primary" id="lesson-reveal">Lihat jawaban</button>
+            <div class="lesson-try-bar">
+              <span class="lesson-try-label">Coba dengan:</span>
+              <div class="lesson-eng-toggle" role="group">
+                <button class="leng-btn is-active" data-leng="css">CSS</button>
+                <button class="leng-btn" data-leng="xpath">XPath</button>
+              </div>
+              <span class="lesson-ans-hint" id="lesson-ans-hint"></span>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-ghost" id="lesson-run">Run (highlight)</button>
+              <button class="btn btn-primary" id="lesson-reveal">Lihat jawaban</button>
+            </div>
           </div>
           <div class="answer-box" id="lesson-answer" hidden></div>
           <div class="output" id="lesson-output"></div>
@@ -103,7 +116,18 @@
         </div>
         <p class="blurb" id="page-blurb"></p>
 
-        <ol class="task-list" id="task-list"></ol>
+        <!-- compact top bar: collapsible task navigator -->
+        <div class="nav-topbar">
+          <button class="nav-toggle" id="task-nav-toggle" type="button" aria-expanded="false" aria-controls="task-nav-panel">
+            <span class="nav-toggle-ico">☰</span>
+            <span class="nav-toggle-text">Daftar soal</span>
+            <span class="nav-toggle-pos" id="task-nav-pos">1/0</span>
+            <span class="nav-toggle-caret" aria-hidden="true">▾</span>
+          </button>
+        </div>
+        <div class="nav-panel" id="task-nav-panel" hidden>
+          <ol class="task-list" id="task-list"></ol>
+        </div>
 
         <div class="task-active card" id="task-active" hidden>
           <div class="task-active-head">
@@ -115,16 +139,24 @@
             <p id="active-hint"></p>
           </details>
 
-          <div class="selector-row">
-            <input type="text" id="selector-input" class="selector-input" spellcheck="false"
-                   placeholder="ketik selector di sini…" autocomplete="off" />
-          </div>
-          <div class="btn-row">
-            <button class="btn btn-ghost" id="btn-run">Run (highlight)</button>
-            <button class="btn btn-primary" id="btn-check">Check answer</button>
+          <div class="answer-zone">
+            <div class="answer-zone-label">✍️ Ketik selector-mu di sini, lalu <strong>Check answer</strong></div>
+            <div class="selector-row">
+              <input type="text" id="selector-input" class="selector-input" spellcheck="false"
+                     placeholder="ketik selector di sini…" autocomplete="off" />
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-ghost" id="btn-run">Run (highlight)</button>
+              <button class="btn btn-primary" id="btn-check">Check answer</button>
+            </div>
           </div>
           <div class="feedback" id="feedback" hidden></div>
           <div class="output" id="output"></div>
+
+          <div class="btn-row task-nav">
+            <button class="btn btn-link" id="task-prev">← Sebelumnya</button>
+            <button class="btn btn-link" id="task-next">Berikutnya →</button>
+          </div>
         </div>
 
         <button class="btn btn-link" id="btn-reset">Reset progress halaman ini</button>
@@ -170,8 +202,8 @@
     </section>
   </main>
 
-  <script src="tasks.js"></script>
-  <script src="lessons.js"></script>
-  <script src="app.js"></script>
+  <script src="tasks.js?v=2"></script>
+  <script src="lessons.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
