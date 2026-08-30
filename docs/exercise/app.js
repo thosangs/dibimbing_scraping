@@ -22,7 +22,9 @@
   let mode = "materi";
   let engine = "css";          // current engine for the active input
   let pageId = null;
-  let rawHtml = "";            // current display source (practice page or pasted)
+  let rawHtml = "";            // practice page HTML (used for grading)
+  let pgHtml = "";             // playground pasted HTML (kept separate so it never
+                               // overwrites the practice page)
   let activeTaskId = null;
   let view = "preview";
   let lessonIdx = 0;
@@ -316,8 +318,8 @@
 </ul>`;
 
   function loadPasted() {
-    rawHtml = els.pasteHtml.value.trim() || "<p style='font-family:sans-serif;padding:20px;color:#777'>Tempel HTML lalu Load.</p>";
-    renderDisplay(rawHtml, null);
+    pgHtml = els.pasteHtml.value.trim() || "<p style='font-family:sans-serif;padding:20px;color:#777'>Tempel HTML lalu Load.</p>";
+    renderDisplay(pgHtml, null);
     els._target = els.pgOutput;
     els.pgOutput.innerHTML = "";
     els.pgFeedback.hidden = true;
@@ -327,11 +329,11 @@
     const expr = els.pgInput.value;
     els._target = els.pgOutput;
     try {
-      renderDisplay(rawHtml, { engine, expr });
-      describeMatches(runQuery(parseDoc(rawHtml), engine, expr));
+      renderDisplay(pgHtml, { engine, expr });
+      describeMatches(runQuery(parseDoc(pgHtml), engine, expr));
       els.pgFeedback.hidden = true;
     } catch (e) {
-      renderDisplay(rawHtml, null);
+      renderDisplay(pgHtml, null);
       showFeedback(els.pgFeedback, "bad", e.message);
       els.pgOutput.innerHTML = "";
     }
